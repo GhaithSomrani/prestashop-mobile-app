@@ -1,0 +1,177 @@
+{
+  "@@locale": "fr",
+
+  "appTitle": "PrestaShop Mobile",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  "home": "Accueil",
+  "categories": "Catégories",
+  "cart": "Panier",
+  "wishlist": "Liste de souhaits",
+  "profile": "Profil",
+
+  "search": "Rechercher",
+  "searchProducts": "Rechercher des produits...",
+  "searchHint": "Rechercher par nom, catégorie...",
+  "noResultsFound": "Aucun résultat trouvé",
+  "searchHistory": "Historique de recherche",
+  "clearHistory": "Effacer l'historique",
+
+  "allCategories": "Toutes les catégories",
+  "subcategories": "Sous-catégories",
+  "viewAll": "Voir tout",
+  "seeAll": "Voir tout",
+
+  "products": "Produits",
+  "featuredProducts": "Produits en vedette",
+  "handPickedJustForYou": "Sélectionnés rien que pour vous",
+  "trendingToday": "Tendances du jour",
+  "newArrivals": "Nouveautés",
+  "freshFromWarehouse": "Fraîchement arrivé",
+  "shopByBrand": "Acheter par marque",
+  "items": "articles",
+
+  "productDetails": "Détails du produit",
+  "description": "Description",
+  "specifications": "Spécifications",
+  "reviews": "Avis",
+  "addToCart": "Ajouter au panier",
+  "addedToCart": "Ajouté au panier",
+  "buyNow": "Acheter maintenant",
+  "inStock": "En stock",
+  "outOfStock": "Rupture de stock",
+  "quantity": "Quantité",
+  "price": "Prix",
+  "total": "Total",
+  "subtotal": "Sous-total",
+
+  "cartEmpty": "Votre panier est vide",
+  "startShopping": "Commencer vos achats",
+  "removeFromCart": "Retirer du panier",
+  "clearCart": "Vider le panier",
+  "proceedToCheckout": "Passer à la caisse",
+
+  "checkout": "Passer la commande",
+  "customerInformation": "Informations client",
+  "shippingAddress": "Adresse de livraison",
+  "billingAddress": "Adresse de facturation",
+  "shippingMethod": "Méthode de livraison",
+  "paymentMethod": "Méthode de paiement",
+  "orderSummary": "Récapitulatif de la commande",
+  "placeOrder": "Passer la commande",
+
+  "firstName": "Prénom",
+  "lastName": "Nom",
+  "email": "E-mail",
+  "phone": "Téléphone",
+  "address": "Adresse",
+  "city": "Ville",
+  "state": "État/Province",
+  "postalCode": "Code postal",
+  "country": "Pays",
+
+  "standardShipping": "Livraison standard",
+  "expressShipping": "Livraison express",
+  "nextDayDelivery": "Livraison le lendemain",
+
+  "cashOnDelivery": "Paiement à la livraison",
+  "creditCard": "Carte de crédit",
+  "paypal": "PayPal",
+  "bankTransfer": "Virement bancaire",
+
+  "orderConfirmation": "Confirmation de commande",
+  "orderPlaced": "Commande passée avec succès",
+  "orderNumber": "Numéro de commande",
+  "thankYou": "Merci pour votre commande",
+  "orderHistory": "Historique des commandes",
+  "orderDetails": "Détails de la commande",
+  "trackOrder": "Suivre la commande",
+  "orderStatus": "État de la commande",
+
+  "login": "Se connecter",
+  "register": "S'inscrire",
+  "logout": "Se déconnecter",
+  "password": "Mot de passe",
+  "confirmPassword": "Confirmer le mot de passe",
+  "forgotPassword": "Mot de passe oublié?",
+  "dontHaveAccount": "Vous n'avez pas de compte?",
+  "alreadyHaveAccount": "Vous avez déjà un compte?",
+
+  "myAccount": "Mon compte",
+  "myOrders": "Mes commandes",
+  "myAddresses": "Mes adresses",
+  "settings": "Paramètres",
+  "language": "Langue",
+  "currency": "Devise",
+  "notifications": "Notifications",
+
+  "save": "Enregistrer",
+  "cancel": "Annuler",
+  "delete": "Supprimer",
+  "edit": "Modifier",
+  "update": "Mettre à jour",
+  "confirm": "Confirmer",
+  "back": "Retour",
+  "next": "Suivant",
+  "done": "Terminé",
+  "ok": "OK",
+  "yes": "Oui",
+  "no": "Non",
+
+  "loading": "Chargement...",
+  "loadingProducts": "Chargement des produits...",
+  "loadingCategories": "Chargement des catégories...",
+  "error": "Erreur",
+  "errorOccurred": "Une erreur s'est produite",
+  "tryAgain": "Réessayer",
+  "retry": "Réessayer",
+
+  "sale": "SOLDES",
+  "summerSale": "Soldes d'été",
+  "upToOff": "Jusqu'à 50% de réduction sur une sélection d'articles",
+  "shopNow": "Acheter maintenant",
+
+  "filters": "Filtres",
+  "applyFilters": "Appliquer les filtres",
+  "sortBy": "Trier par",
+  "priceRange": "Fourchette de prix",
+  "minPrice": "Prix minimum",
+  "maxPrice": "Prix maximum",
+  "apply": "Appliquer",
+  "reset": "Réinitialiser",
+
+  "brand": "Marque",
+  "color": "Couleur",
+  "size": "Taille",
+  "availability": "Disponibilité",
+  "onSale": "En promotion",
+
+  "newest": "Plus récent",
+  "priceLowToHigh": "Prix croissant",
+  "priceHighToLow": "Prix décroissant",
+  "popular": "Populaire",
+
+  "discount": "Réduction",
+  "off": "de réduction",
+
+  "required": "Requis",
+  "invalidEmail": "E-mail invalide",
+  "fieldRequired": "Ce champ est obligatoire",
+
+  "deliveryTime": "Délai de livraison",
+  "days": "jours",
+  "free": "Gratuit",
+
+  "tnd": "TND",
+  "currency_format": "{amount} TND",
+  "@currency_format": {
+    "description": "Format for displaying currency",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
+}

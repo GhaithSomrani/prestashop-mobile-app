@@ -1,0 +1,177 @@
+{
+  "@@locale": "en",
+
+  "appTitle": "PrestaShop Mobile",
+  "@appTitle": {
+    "description": "The title of the application"
+  },
+
+  "home": "Home",
+  "categories": "Categories",
+  "cart": "Cart",
+  "wishlist": "Wishlist",
+  "profile": "Profile",
+
+  "search": "Search",
+  "searchProducts": "Search products...",
+  "searchHint": "Search by name, category...",
+  "noResultsFound": "No results found",
+  "searchHistory": "Search history",
+  "clearHistory": "Clear history",
+
+  "allCategories": "All Categories",
+  "subcategories": "Subcategories",
+  "viewAll": "View All",
+  "seeAll": "See All",
+
+  "products": "Products",
+  "featuredProducts": "Featured Products",
+  "handPickedJustForYou": "Hand-picked just for you",
+  "trendingToday": "Trending Today",
+  "newArrivals": "New Arrivals",
+  "freshFromWarehouse": "Fresh from the warehouse",
+  "shopByBrand": "Shop by Brand",
+  "items": "items",
+
+  "productDetails": "Product Details",
+  "description": "Description",
+  "specifications": "Specifications",
+  "reviews": "Reviews",
+  "addToCart": "Add to Cart",
+  "addedToCart": "Added to cart",
+  "buyNow": "Buy Now",
+  "inStock": "In Stock",
+  "outOfStock": "Out of Stock",
+  "quantity": "Quantity",
+  "price": "Price",
+  "total": "Total",
+  "subtotal": "Subtotal",
+
+  "cartEmpty": "Your cart is empty",
+  "startShopping": "Start shopping",
+  "removeFromCart": "Remove from cart",
+  "clearCart": "Clear cart",
+  "proceedToCheckout": "Proceed to Checkout",
+
+  "checkout": "Checkout",
+  "customerInformation": "Customer Information",
+  "shippingAddress": "Shipping Address",
+  "billingAddress": "Billing Address",
+  "shippingMethod": "Shipping Method",
+  "paymentMethod": "Payment Method",
+  "orderSummary": "Order Summary",
+  "placeOrder": "Place Order",
+
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "email": "Email",
+  "phone": "Phone",
+  "address": "Address",
+  "city": "City",
+  "state": "State/Province",
+  "postalCode": "Postal Code",
+  "country": "Country",
+
+  "standardShipping": "Standard Shipping",
+  "expressShipping": "Express Shipping",
+  "nextDayDelivery": "Next Day Delivery",
+
+  "cashOnDelivery": "Cash on Delivery",
+  "creditCard": "Credit Card",
+  "paypal": "PayPal",
+  "bankTransfer": "Bank Transfer",
+
+  "orderConfirmation": "Order Confirmation",
+  "orderPlaced": "Order placed successfully",
+  "orderNumber": "Order Number",
+  "thankYou": "Thank you for your order",
+  "orderHistory": "Order History",
+  "orderDetails": "Order Details",
+  "trackOrder": "Track Order",
+  "orderStatus": "Order Status",
+
+  "login": "Login",
+  "register": "Register",
+  "logout": "Logout",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "forgotPassword": "Forgot Password?",
+  "dontHaveAccount": "Don't have an account?",
+  "alreadyHaveAccount": "Already have an account?",
+
+  "myAccount": "My Account",
+  "myOrders": "My Orders",
+  "myAddresses": "My Addresses",
+  "settings": "Settings",
+  "language": "Language",
+  "currency": "Currency",
+  "notifications": "Notifications",
+
+  "save": "Save",
+  "cancel": "Cancel",
+  "delete": "Delete",
+  "edit": "Edit",
+  "update": "Update",
+  "confirm": "Confirm",
+  "back": "Back",
+  "next": "Next",
+  "done": "Done",
+  "ok": "OK",
+  "yes": "Yes",
+  "no": "No",
+
+  "loading": "Loading...",
+  "loadingProducts": "Loading products...",
+  "loadingCategories": "Loading categories...",
+  "error": "Error",
+  "errorOccurred": "An error occurred",
+  "tryAgain": "Try Again",
+  "retry": "Retry",
+
+  "sale": "SALE",
+  "summerSale": "Summer Sale",
+  "upToOff": "Up to 50% off on selected items",
+  "shopNow": "Shop Now",
+
+  "filters": "Filters",
+  "applyFilters": "Apply Filters",
+  "sortBy": "Sort By",
+  "priceRange": "Price Range",
+  "minPrice": "Min Price",
+  "maxPrice": "Max Price",
+  "apply": "Apply",
+  "reset": "Reset",
+
+  "brand": "Brand",
+  "color": "Color",
+  "size": "Size",
+  "availability": "Availability",
+  "onSale": "On Sale",
+
+  "newest": "Newest",
+  "priceLowToHigh": "Price: Low to High",
+  "priceHighToLow": "Price: High to Low",
+  "popular": "Popular",
+
+  "discount": "Discount",
+  "off": "off",
+
+  "required": "Required",
+  "invalidEmail": "Invalid email",
+  "fieldRequired": "This field is required",
+
+  "deliveryTime": "Delivery time",
+  "days": "days",
+  "free": "Free",
+
+  "tnd": "TND",
+  "currency_format": "{amount} TND",
+  "@currency_format": {
+    "description": "Format for displaying currency",
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  }
+}

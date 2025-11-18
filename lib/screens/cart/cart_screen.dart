@@ -5,6 +5,8 @@ import '../../widgets/cart_item_widget.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../config/app_theme.dart';
 import '../checkout/checkout_screen.dart';
+import '../../l10n/app_localizations.dart';
+import '../../utils/currency_formatter.dart';
 
 /// Modern Cart Screen with clean white minimal UI
 class CartScreen extends StatelessWidget {
@@ -12,13 +14,15 @@ class CartScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundWhite,
       appBar: AppBar(
         backgroundColor: AppTheme.pureWhite,
-        title: const Text(
-          'Shopping Cart',
-          style: TextStyle(
+        title: Text(
+          l10n?.cart ?? 'Panier',
+          style: const TextStyle(
             color: AppTheme.primaryBlack,
             fontWeight: FontWeight.w600,
           ),
@@ -35,12 +39,12 @@ class CartScreen extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
                       ),
-                      title: const Text('Clear Cart'),
-                      content: const Text('Are you sure you want to clear the cart?'),
+                      title: Text(l10n?.clearCart ?? 'Vider le panier'),
+                      content: Text('Êtes-vous sûr de vouloir vider le panier?'),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context),
-                          child: const Text('Cancel'),
+                          child: Text(l10n?.cancel ?? 'Annuler'),
                         ),
                         ElevatedButton(
                           onPressed: () {
@@ -50,13 +54,13 @@ class CartScreen extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.errorRed,
                           ),
-                          child: const Text('Clear'),
+                          child: Text(l10n?.delete ?? 'Supprimer'),
                         ),
                       ],
                     ),
                   );
                 },
-                child: const Text('Clear'),
+                child: Text(l10n?.clearCart ?? 'Vider'),
               );
             },
           ),
@@ -67,12 +71,12 @@ class CartScreen extends StatelessWidget {
           if (cart.isEmpty) {
             return EmptyStateWidget(
               icon: Icons.shopping_cart_outlined,
-              title: 'Your Cart is Empty',
-              message: 'Add some products to get started',
+              title: l10n?.cartEmpty ?? 'Votre panier est vide',
+              message: 'Ajoutez des produits pour commencer',
               onAction: () {
                 // Navigate to home - handled by bottom nav
               },
-              actionLabel: 'Start Shopping',
+              actionLabel: l10n?.startShopping ?? 'Commencer vos achats',
             );
           }
 
@@ -105,15 +109,15 @@ class CartScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Subtotal:',
-                            style: TextStyle(
+                          Text(
+                            '${l10n?.subtotal ?? 'Sous-total'}:',
+                            style: const TextStyle(
                               fontSize: 15,
                               color: AppTheme.secondaryGrey,
                             ),
                           ),
                           Text(
-                            '\$${cart.totalAmount.toStringAsFixed(2)}',
+                            CurrencyFormatter.formatTND(cart.totalAmount),
                             style: const TextStyle(
                               fontSize: 15,
                               color: AppTheme.secondaryGrey,
@@ -124,19 +128,19 @@ class CartScreen extends StatelessWidget {
                       const SizedBox(height: AppTheme.spacing1),
 
                       // Shipping
-                      const Row(
+                      Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Shipping:',
-                            style: TextStyle(
+                            'Livraison:',
+                            style: const TextStyle(
                               fontSize: 15,
                               color: AppTheme.secondaryGrey,
                             ),
                           ),
                           Text(
-                            'Free',
-                            style: TextStyle(
+                            l10n?.free ?? 'Gratuit',
+                            style: const TextStyle(
                               fontSize: 15,
                               color: AppTheme.successGreen,
                               fontWeight: FontWeight.w600,
@@ -152,7 +156,7 @@ class CartScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Total (${cart.itemCount} items):',
+                            '${l10n?.total ?? 'Total'} (${cart.itemCount} ${l10n?.items ?? 'articles'}):',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -160,7 +164,7 @@ class CartScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '\$${cart.totalAmount.toStringAsFixed(2)}',
+                            CurrencyFormatter.formatTND(cart.totalAmount),
                             style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -185,9 +189,9 @@ class CartScreen extends StatelessWidget {
                               ),
                             );
                           },
-                          child: const Text(
-                            'Proceed to Checkout',
-                            style: TextStyle(
+                          child: Text(
+                            l10n?.proceedToCheckout ?? 'Passer à la caisse',
+                            style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),

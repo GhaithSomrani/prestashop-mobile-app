@@ -13,6 +13,7 @@ import '../../widgets/loading_widget.dart';
 import '../../widgets/error_widget.dart';
 import '../product/product_detail_screen.dart';
 import '../search/search_screen.dart';
+import '../../l10n/app_localizations.dart';
 
 /// Modern Home Screen with clean white minimal UI
 class HomeScreen extends StatefulWidget {
@@ -56,18 +57,20 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return Scaffold(
       backgroundColor: AppTheme.backgroundWhite,
       body: SafeArea(
         child: Consumer<ProductProvider>(
           builder: (context, productProvider, child) {
             if (productProvider.isLoading && productProvider.products.isEmpty) {
-              return const LoadingWidget(message: 'Loading products...');
+              return LoadingWidget(message: l10n?.loadingProducts ?? 'Chargement des produits...');
             }
 
             if (productProvider.hasError) {
               return ErrorDisplayWidget(
-                message: productProvider.error ?? 'Unknown error',
+                message: productProvider.error ?? (l10n?.errorOccurred ?? 'Une erreur s\'est produite'),
                 onRetry: _loadProducts,
               );
             }
@@ -107,8 +110,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Hero Banner
                 SliverToBoxAdapter(
                   child: HeroBanner(
-                    title: 'Summer Sale',
-                    subtitle: 'Up to 50% off on selected items',
+                    title: l10n?.summerSale ?? 'Soldes d\'été',
+                    subtitle: l10n?.upToOff ?? 'Jusqu\'à 50% de réduction sur une sélection d\'articles',
                     onButtonPressed: () {
                       // Navigate to sale page
                     },
@@ -122,8 +125,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Featured Products
                 SliverToBoxAdapter(
                   child: SectionHeader(
-                    title: 'Featured Products',
-                    subtitle: 'Hand-picked just for you',
+                    title: l10n?.featuredProducts ?? 'Produits en vedette',
+                    subtitle: l10n?.handPickedJustForYou ?? 'Sélectionnés rien que pour vous',
                     onSeeAllPressed: () {
                       // Navigate to all products
                     },
@@ -141,8 +144,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Trending Today Header
                 SliverToBoxAdapter(
                   child: SectionHeader(
-                    title: 'Trending Today',
-                    subtitle: '${productProvider.products.length} items',
+                    title: l10n?.trendingToday ?? 'Tendances du jour',
+                    subtitle: '${productProvider.products.length} ${l10n?.items ?? 'articles'}',
                     onSeeAllPressed: () {
                       // Navigate to trending
                     },
@@ -159,8 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 // New Arrivals
                 SliverToBoxAdapter(
                   child: SectionHeader(
-                    title: 'New Arrivals',
-                    subtitle: 'Fresh from the warehouse',
+                    title: l10n?.newArrivals ?? 'Nouveautés',
+                    subtitle: l10n?.freshFromWarehouse ?? 'Fraîchement arrivé',
                     onSeeAllPressed: () {
                       // Navigate to new arrivals
                     },
@@ -178,7 +181,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Shop by Brand
                 SliverToBoxAdapter(
                   child: SectionHeader(
-                    title: 'Shop by Brand',
+                    title: l10n?.shopByBrand ?? 'Acheter par marque',
                     onSeeAllPressed: () {
                       // Navigate to brands
                     },
@@ -216,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
           const Expanded(
             child: Center(
               child: Text(
-                'SHOP',
+                'BOUTIQUE',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,

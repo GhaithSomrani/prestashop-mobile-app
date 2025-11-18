@@ -16,6 +16,7 @@ class ApiConfig {
   static const String orderCarriersEndpoint = 'api/order_carriers';
   static const String orderStatesEndpoint = 'api/order_states';
   static const String imagesEndpoint = 'api/images';
+  static const String stockAvailablesEndpoint = 'api/stock_availables';
 
   // Request parameters
   static const String outputFormat = 'JSON'; // or 'XML'

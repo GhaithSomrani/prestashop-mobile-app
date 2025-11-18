@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../providers/cart_provider.dart';
 import '../config/app_theme.dart';
+import '../utils/currency_formatter.dart';
+import '../l10n/app_localizations.dart';
 
 /// Modern Product Card with soft shadows and clean design
 class ProductCard extends StatelessWidget {
@@ -20,6 +22,8 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -112,10 +116,10 @@ class ProductCard extends StatelessWidget {
                             top: Radius.circular(AppTheme.radiusMedium),
                           ),
                         ),
-                        child: const Center(
+                        child: Center(
                           child: Text(
-                            'Out of Stock',
-                            style: TextStyle(
+                            l10n?.outOfStock ?? 'Rupture de stock',
+                            style: const TextStyle(
                               color: AppTheme.primaryBlack,
                               fontWeight: FontWeight.w600,
                               fontSize: 12,
@@ -156,7 +160,7 @@ class ProductCard extends StatelessWidget {
                       children: [
                         if (product.isOnSale)
                           Text(
-                            '\$${product.price.toStringAsFixed(2)}',
+                            CurrencyFormatter.formatTND(product.price),
                             style: const TextStyle(
                               decoration: TextDecoration.lineThrough,
                               color: AppTheme.secondaryGrey,
@@ -166,12 +170,16 @@ class ProductCard extends StatelessWidget {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '\$${product.finalPrice.toStringAsFixed(2)}',
-                              style: const TextStyle(
-                                color: AppTheme.primaryBlack,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                            Flexible(
+                              child: Text(
+                                CurrencyFormatter.formatTND(product.finalPrice),
+                                style: const TextStyle(
+                                  color: AppTheme.primaryBlack,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
 
@@ -186,9 +194,9 @@ class ProductCard extends StatelessWidget {
                                             if (!isInCart) {
                                               cart.addItem(product);
                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(
-                                                  content: Text('Added to cart'),
-                                                  duration: Duration(seconds: 1),
+                                                SnackBar(
+                                                  content: Text(l10n?.addedToCart ?? 'Ajouté au panier'),
+                                                  duration: const Duration(seconds: 1),
                                                   behavior: SnackBarBehavior.floating,
                                                 ),
                                               );
@@ -200,7 +208,7 @@ class ProductCard extends StatelessWidget {
                                       decoration: BoxDecoration(
                                         color: isInCart
                                             ? AppTheme.successGreen
-                                            : AppTheme.primaryBlack,
+                                            : (product.inStock ? AppTheme.primaryBlack : AppTheme.lightGrey),
                                         borderRadius: BorderRadius.circular(
                                           AppTheme.radiusSmall,
                                         ),
