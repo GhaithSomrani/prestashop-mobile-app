@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/category_provider.dart';
-import '../../providers/product_provider.dart';
 import '../../widgets/category_card.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/error_widget.dart';

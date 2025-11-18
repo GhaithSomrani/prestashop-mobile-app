@@ -49,7 +49,7 @@ class CustomerService {
         if (customersData is List && customersData.isNotEmpty) {
           return Customer.fromJson(customersData.first);
         } else if (customersData is Map) {
-          return Customer.fromJson(customersData);
+          return Customer.fromJson(customersData as Map<String, dynamic>);
         }
       }
 
@@ -124,7 +124,7 @@ class CustomerService {
               .map((addressJson) => Address.fromJson(addressJson))
               .toList();
         } else if (addressesData is Map) {
-          return [Address.fromJson(addressesData)];
+          return [Address.fromJson(addressesData as Map<String, dynamic>)];
         }
       }
 

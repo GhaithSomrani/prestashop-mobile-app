@@ -26,7 +26,7 @@ class CarrierService {
               .map((carrierJson) => Carrier.fromJson(carrierJson))
               .toList();
         } else if (carriersData is Map) {
-          return [Carrier.fromJson(carriersData)];
+          return [Carrier.fromJson(carriersData as Map<String, dynamic>)];
         }
       }
 

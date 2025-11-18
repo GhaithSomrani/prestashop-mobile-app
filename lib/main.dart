@@ -43,7 +43,6 @@ class MyApp extends StatelessWidget {
     final categoryService = CategoryService(apiService);
     final orderService = OrderService(apiService);
     final customerService = CustomerService(apiService);
-    final carrierService = CarrierService(apiService);
 
     return MultiProvider(
       providers: [
