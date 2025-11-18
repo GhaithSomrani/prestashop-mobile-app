@@ -16,7 +16,7 @@ class ProductService {
     try {
       final queryParams = <String, String>{
         'display': 'full',
-        if (limit != null) 'limit': '$offset,${limit}',
+        if (limit != null) 'limit': '$offset,$limit',
         if (categoryId != null) 'filter[id_category_default]': categoryId,
         if (searchQuery != null) 'filter[name]': '%$searchQuery%',
       };
@@ -35,7 +35,7 @@ class ProductService {
               .toList();
         } else if (productsData is Map) {
           // Single product wrapped in products key
-          return [Product.fromJson(productsData)];
+          return [Product.fromJson(productsData as Map<String, dynamic>)];
         }
       }
 

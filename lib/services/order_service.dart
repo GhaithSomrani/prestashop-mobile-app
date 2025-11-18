@@ -26,7 +26,7 @@ class OrderService {
       );
 
       // Note: Shipping cost should be fetched from carrier
-      final totalShipping = 0.0; // This should be calculated based on carrier
+      const totalShipping = 0.0; // This should be calculated based on carrier
 
       final orderData = {
         'order': {
@@ -85,7 +85,7 @@ class OrderService {
               .map((orderJson) => Order.fromJson(orderJson))
               .toList();
         } else if (ordersData is Map) {
-          return [Order.fromJson(ordersData)];
+          return [Order.fromJson(ordersData as Map<String, dynamic>)];
         }
       }
 

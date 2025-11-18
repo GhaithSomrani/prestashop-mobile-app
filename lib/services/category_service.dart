@@ -11,7 +11,7 @@ class CategoryService {
     try {
       final queryParams = <String, String>{
         'display': 'full',
-        if (limit != null) 'limit': '$offset,${limit}',
+        if (limit != null) 'limit': '$offset,$limit',
       };
 
       final response = await _apiService.get(
@@ -26,7 +26,7 @@ class CategoryService {
               .map((categoryJson) => Category.fromJson(categoryJson))
               .toList();
         } else if (categoriesData is Map) {
-          return [Category.fromJson(categoriesData)];
+          return [Category.fromJson(categoriesData as Map<String, dynamic>)];
         }
       }
 
@@ -73,7 +73,7 @@ class CategoryService {
               .map((categoryJson) => Category.fromJson(categoryJson))
               .toList();
         } else if (categoriesData is Map) {
-          return [Category.fromJson(categoriesData)];
+          return [Category.fromJson(categoriesData as Map<String, dynamic>)];
         }
       }
 
