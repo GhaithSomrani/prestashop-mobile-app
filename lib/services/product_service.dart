@@ -160,7 +160,7 @@ class ProductService {
     try {
       final response = await _apiService.get(
         '${ApiConfig.productsEndpoint}/$id',
-        queryParameters: {'display': 'full'},
+        queryParameters: {},
       );
 
       if (response['product'] == null) {
