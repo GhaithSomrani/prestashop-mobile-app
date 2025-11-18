@@ -144,7 +144,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
-                                '-${product.discountPercentage.toStringAsFixed(0)}%',
+                                '-${product.calculatedDiscountPercentage.toStringAsFixed(0)}%',
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
