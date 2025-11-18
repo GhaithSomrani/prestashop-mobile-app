@@ -19,7 +19,13 @@ class CategoryService {
         queryParameters: queryParams,
       );
 
-      if (response['categories'] != null) {
+      // Handle different response formats
+      if (response is List) {
+        if (response.isEmpty) return [];
+        return response
+            .map((categoryJson) => Category.fromJson(categoryJson))
+            .toList();
+      } else if (response is Map && response['categories'] != null) {
         final categoriesData = response['categories'];
         if (categoriesData is List) {
           return categoriesData
@@ -66,7 +72,13 @@ class CategoryService {
         queryParameters: queryParams,
       );
 
-      if (response['categories'] != null) {
+      // Handle different response formats
+      if (response is List) {
+        if (response.isEmpty) return [];
+        return response
+            .map((categoryJson) => Category.fromJson(categoryJson))
+            .toList();
+      } else if (response is Map && response['categories'] != null) {
         final categoriesData = response['categories'];
         if (categoriesData is List) {
           return categoriesData
@@ -97,7 +109,13 @@ class CategoryService {
         queryParameters: queryParams,
       );
 
-      if (response['categories'] != null) {
+      // Handle different response formats
+      if (response is List) {
+        if (response.isEmpty) return [];
+        return response
+            .map((categoryJson) => Category.fromJson(categoryJson))
+            .toList();
+      } else if (response is Map && response['categories'] != null) {
         final categoriesData = response['categories'];
         if (categoriesData is List) {
           return categoriesData

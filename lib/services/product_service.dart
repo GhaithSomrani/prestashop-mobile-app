@@ -56,9 +56,21 @@ class ProductService {
         queryParameters: queryParams,
       );
 
-      // Handle both single product and array of products
+      // Handle different response formats from PrestaShop API
       List<Product> products = [];
-      if (response['products'] != null) {
+
+      // Case 1: Empty array response []
+      if (response is List) {
+        if (response.isEmpty) {
+          return []; // No products found
+        }
+        // Case 2: Direct array of products (without wrapper)
+        products = response
+            .map((productJson) => Product.fromJson(productJson))
+            .toList();
+      }
+      // Case 3: Response is a Map with 'products' key
+      else if (response is Map && response['products'] != null) {
         final productsData = response['products'];
         if (productsData is List) {
           products = productsData
@@ -68,6 +80,10 @@ class ProductService {
           // Single product wrapped in products key
           products = [Product.fromJson(productsData as Map<String, dynamic>)];
         }
+      }
+      // Case 4: Empty result
+      else {
+        return [];
       }
 
       // Enrich products with additional data

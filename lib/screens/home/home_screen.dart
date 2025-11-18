@@ -122,75 +122,82 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: SizedBox(height: AppTheme.spacing3),
                 ),
 
-                // Featured Products
-                SliverToBoxAdapter(
-                  child: SectionHeader(
-                    title: l10n?.featuredProducts ?? 'Produits en vedette',
-                    subtitle: l10n?.handPickedJustForYou ?? 'Sélectionnés rien que pour vous',
-                    onSeeAllPressed: () {
-                      // Navigate to all products
-                    },
+                // Featured Products (hide if empty)
+                if (productProvider.products.isNotEmpty && productProvider.products.length > 0) ...[
+                  SliverToBoxAdapter(
+                    child: SectionHeader(
+                      title: l10n?.featuredProducts ?? 'Produits en vedette',
+                      subtitle: l10n?.handPickedJustForYou ?? 'Sélectionnés rien que pour vous',
+                      onSeeAllPressed: () {
+                        // Navigate to all products
+                      },
+                    ),
                   ),
-                ),
 
-                SliverToBoxAdapter(
-                  child: _buildFeaturedProducts(productProvider),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppTheme.spacing3),
-                ),
-
-                // Trending Today Header
-                SliverToBoxAdapter(
-                  child: SectionHeader(
-                    title: l10n?.trendingToday ?? 'Tendances du jour',
-                    subtitle: '${productProvider.products.length} ${l10n?.items ?? 'articles'}',
-                    onSeeAllPressed: () {
-                      // Navigate to trending
-                    },
+                  SliverToBoxAdapter(
+                    child: _buildFeaturedProducts(productProvider),
                   ),
-                ),
 
-                // Trending Products Grid
-                _buildTrendingGrid(productProvider),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppTheme.spacing3),
-                ),
-
-                // New Arrivals
-                SliverToBoxAdapter(
-                  child: SectionHeader(
-                    title: l10n?.newArrivals ?? 'Nouveautés',
-                    subtitle: l10n?.freshFromWarehouse ?? 'Fraîchement arrivé',
-                    onSeeAllPressed: () {
-                      // Navigate to new arrivals
-                    },
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppTheme.spacing3),
                   ),
-                ),
+                ],
 
-                SliverToBoxAdapter(
-                  child: _buildNewArrivals(productProvider),
-                ),
-
-                const SliverToBoxAdapter(
-                  child: SizedBox(height: AppTheme.spacing3),
-                ),
-
-                // Shop by Brand
-                SliverToBoxAdapter(
-                  child: SectionHeader(
-                    title: l10n?.shopByBrand ?? 'Acheter par marque',
-                    onSeeAllPressed: () {
-                      // Navigate to brands
-                    },
+                // Trending Today (hide if empty)
+                if (productProvider.products.length > 5) ...[
+                  SliverToBoxAdapter(
+                    child: SectionHeader(
+                      title: l10n?.trendingToday ?? 'Tendances du jour',
+                      subtitle: '${productProvider.products.length} ${l10n?.items ?? 'articles'}',
+                      onSeeAllPressed: () {
+                        // Navigate to trending
+                      },
+                    ),
                   ),
-                ),
 
-                SliverToBoxAdapter(
-                  child: _buildBrandSlider(),
-                ),
+                  _buildTrendingGrid(productProvider),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppTheme.spacing3),
+                  ),
+                ],
+
+                // New Arrivals (hide if empty)
+                if (productProvider.products.isNotEmpty && productProvider.products.length > 0) ...[
+                  SliverToBoxAdapter(
+                    child: SectionHeader(
+                      title: l10n?.newArrivals ?? 'Nouveautés',
+                      subtitle: l10n?.freshFromWarehouse ?? 'Fraîchement arrivé',
+                      onSeeAllPressed: () {
+                        // Navigate to new arrivals
+                      },
+                    ),
+                  ),
+
+                  SliverToBoxAdapter(
+                    child: _buildNewArrivals(productProvider),
+                  ),
+
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: AppTheme.spacing3),
+                  ),
+                ],
+
+                // Shop by Brand (hide if empty)
+                if (_brands.isNotEmpty) ...[
+                  SliverToBoxAdapter(
+                    child: SectionHeader(
+                      title: l10n?.shopByBrand ?? 'Acheter par marque',
+                      onSeeAllPressed: () {
+                        // Navigate to brands
+                      },
+                    ),
+                  ),
+
+                  SliverToBoxAdapter(
+                    child: _buildBrandSlider(),
+                  ),
+                ],
 
                 const SliverToBoxAdapter(
                   child: SizedBox(height: AppTheme.spacing4),
@@ -268,10 +275,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildFeaturedProducts(ProductProvider provider) {
     final featured = provider.products.take(5).toList();
 
-    if (featured.isEmpty) {
-      return const SizedBox(height: 200);
-    }
-
     return SizedBox(
       height: 280,
       child: ListView.builder(
@@ -306,10 +309,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTrendingGrid(ProductProvider provider) {
     final trending = provider.products.skip(5).take(6).toList();
 
-    if (trending.isEmpty) {
-      return const SliverToBoxAdapter(child: SizedBox(height: 200));
-    }
-
     return SliverPadding(
       padding: const EdgeInsets.symmetric(horizontal: AppTheme.spacing2),
       sliver: SliverGrid(
@@ -343,10 +342,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildNewArrivals(ProductProvider provider) {
     final newArrivals = provider.products.take(5).toList();
-
-    if (newArrivals.isEmpty) {
-      return const SizedBox(height: 200);
-    }
 
     return SizedBox(
       height: 280,
