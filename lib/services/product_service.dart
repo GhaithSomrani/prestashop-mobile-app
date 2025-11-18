@@ -19,6 +19,7 @@ class ProductService {
         if (limit != null) 'limit': '$offset,$limit',
         if (categoryId != null) 'filter[id_category_default]': categoryId,
         if (searchQuery != null) 'filter[name]': '%$searchQuery%',
+        'limit': '10',
       };
 
       final response = await _apiService.get(
@@ -49,7 +50,7 @@ class ProductService {
     try {
       final response = await _apiService.get(
         '${ApiConfig.productsEndpoint}/$id',
-        queryParameters: {'display': 'full'},
+        queryParameters: {},
       );
 
       if (response['product'] != null) {

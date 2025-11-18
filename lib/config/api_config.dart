@@ -6,16 +6,16 @@ class ApiConfig {
   static bool get debugMode => dotenv.env['DEBUG_MODE'] == 'true';
 
   // API Endpoints
-  static const String productsEndpoint = '/api/products';
-  static const String categoriesEndpoint = '/api/categories';
-  static const String ordersEndpoint = '/api/orders';
-  static const String customersEndpoint = '/api/customers';
-  static const String cartsEndpoint = '/api/carts';
-  static const String addressesEndpoint = '/api/addresses';
-  static const String carriersEndpoint = '/api/carriers';
-  static const String orderCarriersEndpoint = '/api/order_carriers';
-  static const String orderStatesEndpoint = '/api/order_states';
-  static const String imagesEndpoint = '/api/images';
+  static const String productsEndpoint = 'api/products';
+  static const String categoriesEndpoint = 'api/categories';
+  static const String ordersEndpoint = 'api/orders';
+  static const String customersEndpoint = 'api/customers';
+  static const String cartsEndpoint = 'api/carts';
+  static const String addressesEndpoint = 'api/addresses';
+  static const String carriersEndpoint = 'api/carriers';
+  static const String orderCarriersEndpoint = 'api/order_carriers';
+  static const String orderStatesEndpoint = 'api/order_states';
+  static const String imagesEndpoint = 'api/images';
 
   // Request parameters
   static const String outputFormat = 'JSON'; // or 'XML'
