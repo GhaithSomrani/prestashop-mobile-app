@@ -365,6 +365,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               );
             }).toList(),
+          ),
           const SizedBox(height: AppTheme.spacing3),
           ],
         ],
