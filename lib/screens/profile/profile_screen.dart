@@ -30,8 +30,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppTheme.backgroundWhite,
       appBar: AppBar(
-        title: const Text('Profile'),
+        backgroundColor: AppTheme.pureWhite,
+        title: const Text(
+          'Profile',
+          style: TextStyle(
+            color: AppTheme.primaryBlack,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
       ),
       body: Consumer<AuthProvider>(
         builder: (context, authProvider, child) {
@@ -88,36 +96,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 // Profile Header
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.all(24),
-                  decoration: const BoxDecoration(
-                    color: AppTheme.primaryColor,
+                  padding: const EdgeInsets.all(AppTheme.spacing3),
+                  decoration: BoxDecoration(
+                    color: AppTheme.pureWhite,
+                    boxShadow: AppTheme.softShadow,
                   ),
                   child: Column(
                     children: [
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundColor: Colors.white,
-                        child: Icon(
-                          Icons.person,
-                          size: 60,
-                          color: AppTheme.primaryColor,
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: AppTheme.primaryBlack,
+                            width: 2,
+                          ),
+                        ),
+                        child: const CircleAvatar(
+                          radius: 50,
+                          backgroundColor: AppTheme.backgroundWhite,
+                          child: Icon(
+                            Icons.person,
+                            size: 60,
+                            color: AppTheme.primaryBlack,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppTheme.spacing2),
                       Text(
                         customer.fullName,
                         style: const TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: AppTheme.primaryBlack,
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 4),
                       Text(
                         customer.email,
                         style: const TextStyle(
                           fontSize: 14,
-                          color: Colors.white70,
+                          color: AppTheme.secondaryGrey,
                         ),
                       ),
                     ],
@@ -251,16 +270,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     required String subtitle,
     required VoidCallback onTap,
   }) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    return Container(
+      margin: const EdgeInsets.symmetric(
+        horizontal: AppTheme.spacing2,
+        vertical: 6,
+      ),
+      decoration: BoxDecoration(
+        color: AppTheme.pureWhite,
+        borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+        boxShadow: AppTheme.softShadow,
+      ),
       child: ListTile(
-        leading: Icon(icon, color: AppTheme.accentColor),
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: AppTheme.backgroundWhite,
+            borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
+          ),
+          child: Icon(icon, color: AppTheme.primaryBlack, size: 24),
+        ),
         title: Text(
           title,
-          style: const TextStyle(fontWeight: FontWeight.w600),
+          style: const TextStyle(
+            fontWeight: FontWeight.w600,
+            color: AppTheme.primaryBlack,
+          ),
         ),
-        subtitle: Text(subtitle),
-        trailing: const Icon(Icons.chevron_right),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppTheme.secondaryGrey,
+          ),
+        ),
+        trailing: const Icon(
+          Icons.chevron_right,
+          color: AppTheme.secondaryGrey,
+        ),
         onTap: onTap,
       ),
     );
