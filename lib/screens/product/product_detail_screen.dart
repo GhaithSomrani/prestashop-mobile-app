@@ -128,8 +128,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
                               color: product.isOnSale
-                                  ? AppTheme.errorColor
-                                  : AppTheme.primaryColor,
+                                  ? AppTheme.errorRed
+                                  : AppTheme.primaryBlack,
                             ),
                           ),
                           if (product.isOnSale) ...[
@@ -140,7 +140,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 vertical: 4,
                               ),
                               decoration: BoxDecoration(
-                                color: AppTheme.errorColor,
+                                color: AppTheme.errorRed,
                                 borderRadius: BorderRadius.circular(4),
                               ),
                               child: Text(
@@ -164,8 +164,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 ? Icons.check_circle
                                 : Icons.cancel,
                             color: product.inStock
-                                ? AppTheme.successColor
-                                : AppTheme.errorColor,
+                                ? AppTheme.successGreen
+                                : AppTheme.errorRed,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
@@ -175,8 +175,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                                 : 'Out of Stock',
                             style: TextStyle(
                               color: product.inStock
-                                  ? AppTheme.successColor
-                                  : AppTheme.errorColor,
+                                  ? AppTheme.successGreen
+                                  : AppTheme.errorRed,
                               fontWeight: FontWeight.w600,
                             ),
                           ),

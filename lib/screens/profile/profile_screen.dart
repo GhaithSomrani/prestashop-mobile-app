@@ -247,8 +247,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       icon: const Icon(Icons.logout),
                       label: const Text('Logout'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: AppTheme.errorColor,
-                        side: const BorderSide(color: AppTheme.errorColor),
+                        foregroundColor: AppTheme.errorRed,
+                        side: const BorderSide(color: AppTheme.errorRed),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                     ),

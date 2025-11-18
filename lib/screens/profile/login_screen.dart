@@ -66,7 +66,7 @@ class _LoginScreenState extends State<LoginScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_isLogin ? 'Login failed: $e' : 'Registration failed: $e'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorRed,
           ),
         );
       }
@@ -98,7 +98,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Icon(
                     Icons.shopping_bag,
                     size: 80,
-                    color: AppTheme.accentColor,
+                    color: AppTheme.accentBlue,
                   ),
                   const SizedBox(height: 32),
                   Text(
