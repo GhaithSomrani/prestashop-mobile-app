@@ -17,6 +17,7 @@ class CategoryProvider with ChangeNotifier {
   bool get isLoading => _isLoading;
   String? get error => _error;
   bool get hasError => _error != null;
+  CategoryService get categoryService => _categoryService; // Expose categoryService
 
   Future<void> fetchCategories() async {
     _isLoading = true;

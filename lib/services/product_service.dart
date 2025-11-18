@@ -1,26 +1,30 @@
 import '../models/product.dart';
 import '../config/api_config.dart';
 import 'api_service.dart';
+import 'stock_service.dart';
 
 class ProductService {
   final ApiService _apiService;
+  late final StockService _stockService;
 
-  ProductService(this._apiService);
+  ProductService(this._apiService) {
+    _stockService = StockService(_apiService);
+  }
 
   Future<List<Product>> getProducts({
     int? limit,
     int? offset,
     String? categoryId,
     String? searchQuery,
-    bool filterInStock = true, // Filter only in-stock products by default
+    bool filterInStock = false, // Changed default to false to show all products initially
   }) async {
     try {
       final queryParams = <String, String>{
         'display': 'full',
-        if (limit != null) 'limit': '$offset,$limit',
+        if (limit != null) 'limit': '${offset ?? 0},$limit',
         if (categoryId != null) 'filter[id_category_default]': categoryId,
         if (searchQuery != null) 'filter[name]': '%$searchQuery%',
-        'limit': '10',
+        'filter[active]': '1', // Only active products
       };
 
       final response = await _apiService.get(
@@ -39,6 +43,37 @@ class ProductService {
         } else if (productsData is Map) {
           // Single product wrapped in products key
           products = [Product.fromJson(productsData as Map<String, dynamic>)];
+        }
+      }
+
+      // Fetch stock data for all products from stock_availables endpoint
+      if (products.isNotEmpty) {
+        final productIds = products.map((p) => p.id).toList();
+        try {
+          final stockMap = await _stockService.getStockForProducts(productIds);
+
+          // Update product quantities with stock data
+          products = products.map((product) {
+            final stockQuantity = stockMap[product.id] ?? product.quantity;
+            return Product(
+              id: product.id,
+              name: product.name,
+              description: product.description,
+              shortDescription: product.shortDescription,
+              price: product.price,
+              reducedPrice: product.reducedPrice,
+              imageUrl: product.imageUrl,
+              images: product.images,
+              quantity: stockQuantity,
+              reference: product.reference,
+              active: product.active,
+              categoryId: product.categoryId,
+              variants: product.variants,
+            );
+          }).toList();
+        } catch (e) {
+          print('Warning: Could not fetch stock data: $e');
+          // Continue with product data as is
         }
       }
 
