@@ -108,7 +108,8 @@ class _SearchScreenState extends State<SearchScreen> {
       });
       _addToSearchHistory(query);
 
-      final productProvider = Provider.of<ProductProvider>(context, listen: false);
+      final productProvider =
+          Provider.of<ProductProvider>(context, listen: false);
 
       if (_selectedCategoryId != null) {
         productProvider.fetchProductsByCategory(_selectedCategoryId!);
@@ -161,7 +162,8 @@ class _SearchScreenState extends State<SearchScreen> {
                     children: [
                       ListTile(
                         leading: const Icon(Icons.category_outlined),
-                        title: Text(l10n?.allCategories ?? 'Toutes les catégories'),
+                        title: Text(
+                            l10n?.allCategories ?? 'Toutes les catégories'),
                         selected: _selectedCategoryId == null,
                         onTap: () {
                           setState(() {
@@ -237,7 +239,8 @@ class _SearchScreenState extends State<SearchScreen> {
                 Expanded(
                   child: CustomSearchBar(
                     controller: _searchController,
-                    hintText: l10n?.searchProducts ?? 'Rechercher des produits...',
+                    hintText:
+                        l10n?.searchProducts ?? 'Rechercher des produits...',
                     onTap: () {},
                   ),
                 ),
@@ -251,7 +254,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       color: _selectedCategoryId != null
                           ? AppTheme.successGreen
                           : AppTheme.primaryBlack,
-                      borderRadius: BorderRadius.circular(AppTheme.radiusMedium),
+                      borderRadius:
+                          BorderRadius.circular(AppTheme.radiusMedium),
                       boxShadow: AppTheme.softShadow,
                     ),
                     child: const Icon(
@@ -289,9 +293,8 @@ class _SearchScreenState extends State<SearchScreen> {
 
           // Content
           Expanded(
-            child: _isSearching
-                ? _buildSearchResults()
-                : _buildRecentSearches(),
+            child:
+                _isSearching ? _buildSearchResults() : _buildRecentSearches(),
           ),
         ],
       ),
@@ -324,48 +327,49 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               ],
             ),
-          const SizedBox(height: AppTheme.spacing1),
-          Wrap(
-            spacing: AppTheme.spacing1,
-            runSpacing: AppTheme.spacing1,
-            children: _recentSearches.map((search) {
-              return GestureDetector(
-                onTap: () {
-                  _searchController.text = search;
-                  _performSearch(search);
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppTheme.spacing2,
-                    vertical: AppTheme.spacing1,
-                  ),
-                  decoration: BoxDecoration(
-                    color: AppTheme.pureWhite,
-                    borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
-                    boxShadow: AppTheme.softShadow,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.history,
-                        size: 16,
-                        color: AppTheme.secondaryGrey,
-                      ),
-                      const SizedBox(width: 6),
-                      Text(
-                        search,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: AppTheme.primaryBlack,
+            const SizedBox(height: AppTheme.spacing1),
+            Wrap(
+              spacing: AppTheme.spacing1,
+              runSpacing: AppTheme.spacing1,
+              children: _recentSearches.map((search) {
+                return GestureDetector(
+                  onTap: () {
+                    _searchController.text = search;
+                    _performSearch(search);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppTheme.spacing2,
+                      vertical: AppTheme.spacing1,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppTheme.pureWhite,
+                      borderRadius: BorderRadius.circular(AppTheme.radiusLarge),
+                      boxShadow: AppTheme.softShadow,
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.history,
+                          size: 16,
+                          color: AppTheme.secondaryGrey,
                         ),
-                      ),
-                    ],
+                        const SizedBox(width: 6),
+                        Text(
+                          search,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: AppTheme.primaryBlack,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }).toList(),
-          const SizedBox(height: AppTheme.spacing3),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: AppTheme.spacing3),
           ],
         ],
       ),
