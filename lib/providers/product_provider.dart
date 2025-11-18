@@ -102,6 +102,25 @@ class ProductProvider with ChangeNotifier {
     }
   }
 
+  Future<void> fetchProductsByCategory(String categoryId) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _products = await _productService.getProductsByCategory(categoryId);
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+      if (kDebugMode) {
+        print('Error fetching products by category: $e');
+      }
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
   void clearError() {
     _error = null;
     notifyListeners();

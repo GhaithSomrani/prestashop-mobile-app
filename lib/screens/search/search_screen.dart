@@ -7,7 +7,6 @@ import '../../providers/product_provider.dart';
 import '../../providers/category_provider.dart';
 import '../../widgets/custom_search_bar.dart';
 import '../../widgets/product_card.dart';
-import '../../widgets/filter_bottom_sheet.dart';
 import '../../widgets/loading_widget.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../product/product_detail_screen.dart';
@@ -29,7 +28,6 @@ class _SearchScreenState extends State<SearchScreen> {
   static const int _maxSearchHistory = 10;
 
   bool _isSearching = false;
-  FilterOptions? _currentFilters;
   String? _selectedCategoryId;
   String? _selectedCategoryName;
 
@@ -118,26 +116,6 @@ class _SearchScreenState extends State<SearchScreen> {
         productProvider.searchProducts(query);
       }
     }
-  }
-
-  void _showFilters() {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.8,
-        child: FilterBottomSheet(
-          initialFilters: _currentFilters,
-          onApplyFilters: (filters) {
-            setState(() {
-              _currentFilters = filters;
-            });
-            // Apply filters to product list
-          },
-        ),
-      ),
-    );
   }
 
   void _showCategoryFilter() {
@@ -387,7 +365,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 ),
               );
             }).toList(),
-            const SizedBox(height: AppTheme.spacing3),
+          const SizedBox(height: AppTheme.spacing3),
           ],
         ],
       ),

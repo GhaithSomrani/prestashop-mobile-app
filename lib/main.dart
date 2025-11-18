@@ -8,7 +8,6 @@ import 'services/product_service.dart';
 import 'services/category_service.dart';
 import 'services/order_service.dart';
 import 'services/customer_service.dart';
-import 'services/carrier_service.dart';
 import 'providers/product_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/cart_provider.dart';
