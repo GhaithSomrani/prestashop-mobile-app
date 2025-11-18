@@ -17,6 +17,14 @@ class ApiConfig {
   static const String orderStatesEndpoint = 'api/order_states';
   static const String imagesEndpoint = 'api/images';
   static const String stockAvailablesEndpoint = 'api/stock_availables';
+  static const String combinationsEndpoint = 'api/combinations';
+  static const String productOptionsEndpoint = 'api/product_options';
+  static const String productOptionValuesEndpoint = 'api/product_option_values';
+  static const String featuresEndpoint = 'api/features';
+  static const String featureValuesEndpoint = 'api/feature_values';
+  static const String manufacturersEndpoint = 'api/manufacturers';
+  static const String specificPricesEndpoint = 'api/specific_prices';
+  static const String searchEndpoint = 'api/search';
 
   // Request parameters
   static const String outputFormat = 'JSON'; // or 'XML'

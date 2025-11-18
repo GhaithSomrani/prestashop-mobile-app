@@ -11,7 +11,12 @@ class Product {
   final String? reference;
   final bool active;
   final String categoryId;
+  final String? manufacturerId;
+  final String? manufacturerName;
+  final String? defaultCombinationId;
   final List<ProductVariant>? variants;
+  final bool onSale;
+  final double? discountPercentage;
 
   Product({
     required this.id,
@@ -26,12 +31,17 @@ class Product {
     this.reference,
     this.active = true,
     required this.categoryId,
+    this.manufacturerId,
+    this.manufacturerName,
+    this.defaultCombinationId,
     this.variants,
+    this.onSale = false,
+    this.discountPercentage,
   });
 
-  bool get isOnSale => reducedPrice != null && reducedPrice! < price;
-  double get discountPercentage =>
-      isOnSale ? ((price - reducedPrice!) / price * 100) : 0;
+  bool get isOnSale => onSale || (reducedPrice != null && reducedPrice! < price);
+  double get calculatedDiscountPercentage =>
+      discountPercentage ?? (isOnSale && reducedPrice != null ? ((price - reducedPrice!) / price * 100) : 0);
   double get finalPrice => reducedPrice ?? price;
   bool get inStock => quantity > 0;
 
@@ -73,10 +83,17 @@ class Product {
         reference: product['reference']?.toString(),
         active: product['active'] == '1' || product['active'] == true,
         categoryId: product['id_category_default']?.toString() ?? '0',
+        manufacturerId: product['id_manufacturer']?.toString(),
+        manufacturerName: product['manufacturer_name']?.toString(),
+        defaultCombinationId: product['id_default_combination']?.toString(),
         variants: product['variants'] != null
             ? (product['variants'] as List)
                 .map((v) => ProductVariant.fromJson(v))
                 .toList()
+            : null,
+        onSale: product['on_sale'] == '1' || product['on_sale'] == true,
+        discountPercentage: product['discount_percentage'] != null
+            ? parsePrice(product['discount_percentage'])
             : null,
       );
     } catch (e) {
@@ -98,8 +115,56 @@ class Product {
       'reference': reference,
       'active': active,
       'id_category_default': categoryId,
+      'id_manufacturer': manufacturerId,
+      'manufacturer_name': manufacturerName,
+      'id_default_combination': defaultCombinationId,
       'variants': variants?.map((v) => v.toJson()).toList(),
+      'on_sale': onSale,
+      'discount_percentage': discountPercentage,
     };
+  }
+
+  // Copy with method for easier updates
+  Product copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? shortDescription,
+    double? price,
+    double? reducedPrice,
+    String? imageUrl,
+    List<String>? images,
+    int? quantity,
+    String? reference,
+    bool? active,
+    String? categoryId,
+    String? manufacturerId,
+    String? manufacturerName,
+    String? defaultCombinationId,
+    List<ProductVariant>? variants,
+    bool? onSale,
+    double? discountPercentage,
+  }) {
+    return Product(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      shortDescription: shortDescription ?? this.shortDescription,
+      price: price ?? this.price,
+      reducedPrice: reducedPrice ?? this.reducedPrice,
+      imageUrl: imageUrl ?? this.imageUrl,
+      images: images ?? this.images,
+      quantity: quantity ?? this.quantity,
+      reference: reference ?? this.reference,
+      active: active ?? this.active,
+      categoryId: categoryId ?? this.categoryId,
+      manufacturerId: manufacturerId ?? this.manufacturerId,
+      manufacturerName: manufacturerName ?? this.manufacturerName,
+      defaultCombinationId: defaultCombinationId ?? this.defaultCombinationId,
+      variants: variants ?? this.variants,
+      onSale: onSale ?? this.onSale,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+    );
   }
 }
 

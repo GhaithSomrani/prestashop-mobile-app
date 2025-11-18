@@ -53,7 +53,7 @@ class ProductCard extends StatelessWidget {
                             fit: BoxFit.cover,
                             placeholder: (context, url) => Container(
                               color: AppTheme.backgroundWhite,
-                              child: Center(
+                              child: const Center(
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   color: AppTheme.secondaryGrey,
@@ -96,7 +96,7 @@ class ProductCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppTheme.radiusSmall),
                         ),
                         child: Text(
-                          '-${product.discountPercentage.toStringAsFixed(0)}%',
+                          '-${product.calculatedDiscountPercentage.toStringAsFixed(0)}%',
                           style: const TextStyle(
                             color: AppTheme.pureWhite,
                             fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class ProductCard extends StatelessWidget {
                     Positioned.fill(
                       child: Container(
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.8),
+                          color: Colors.white.withValues(alpha: 0.8),
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(AppTheme.radiusMedium),
                           ),

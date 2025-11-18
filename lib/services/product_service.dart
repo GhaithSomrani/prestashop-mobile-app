@@ -1,22 +1,43 @@
 import '../models/product.dart';
+import '../models/combination.dart';
+import '../models/manufacturer.dart';
+import '../models/specific_price.dart';
+import '../models/feature.dart';
 import '../config/api_config.dart';
 import 'api_service.dart';
 import 'stock_service.dart';
+import 'combination_service.dart';
+import 'manufacturer_service.dart';
+import 'specific_price_service.dart';
+import 'feature_service.dart';
 
 class ProductService {
   final ApiService _apiService;
   late final StockService _stockService;
+  late final CombinationService _combinationService;
+  late final ManufacturerService _manufacturerService;
+  late final SpecificPriceService _specificPriceService;
+  late final FeatureService _featureService;
 
   ProductService(this._apiService) {
     _stockService = StockService(_apiService);
+    _combinationService = CombinationService(_apiService);
+    _manufacturerService = ManufacturerService(_apiService);
+    _specificPriceService = SpecificPriceService(_apiService);
+    _featureService = FeatureService(_apiService);
   }
 
+  /// Get products with pagination support for infinite scroll
   Future<List<Product>> getProducts({
     int? limit,
     int? offset,
     String? categoryId,
     String? searchQuery,
-    bool filterInStock = false, // Changed default to false to show all products initially
+    String? manufacturerId,
+    double? minPrice,
+    double? maxPrice,
+    bool filterInStock = false,
+    String? sortBy, // id_DESC, price_ASC, price_DESC, name_ASC, name_DESC
   }) async {
     try {
       final queryParams = <String, String>{
@@ -24,7 +45,10 @@ class ProductService {
         if (limit != null) 'limit': '${offset ?? 0},$limit',
         if (categoryId != null) 'filter[id_category_default]': categoryId,
         if (searchQuery != null) 'filter[name]': '%$searchQuery%',
+        if (manufacturerId != null) 'filter[id_manufacturer]': manufacturerId,
+        if (minPrice != null) 'filter[price]': '[$minPrice,${maxPrice ?? 999999}]',
         'filter[active]': '1', // Only active products
+        if (sortBy != null) 'sort': '[$sortBy]',
       };
 
       final response = await _apiService.get(
@@ -32,9 +56,21 @@ class ProductService {
         queryParameters: queryParams,
       );
 
-      // Handle both single product and array of products
+      // Handle different response formats from PrestaShop API
       List<Product> products = [];
-      if (response['products'] != null) {
+
+      // Case 1: Empty array response []
+      if (response is List) {
+        if (response.isEmpty) {
+          return []; // No products found
+        }
+        // Case 2: Direct array of products (without wrapper)
+        products = response
+            .map((productJson) => Product.fromJson(productJson))
+            .toList();
+      }
+      // Case 3: Response is a Map with 'products' key
+      else if (response is Map && response['products'] != null) {
         final productsData = response['products'];
         if (productsData is List) {
           products = productsData
@@ -45,37 +81,13 @@ class ProductService {
           products = [Product.fromJson(productsData as Map<String, dynamic>)];
         }
       }
-
-      // Fetch stock data for all products from stock_availables endpoint
-      if (products.isNotEmpty) {
-        final productIds = products.map((p) => p.id).toList();
-        try {
-          final stockMap = await _stockService.getStockForProducts(productIds);
-
-          // Update product quantities with stock data
-          products = products.map((product) {
-            final stockQuantity = stockMap[product.id] ?? product.quantity;
-            return Product(
-              id: product.id,
-              name: product.name,
-              description: product.description,
-              shortDescription: product.shortDescription,
-              price: product.price,
-              reducedPrice: product.reducedPrice,
-              imageUrl: product.imageUrl,
-              images: product.images,
-              quantity: stockQuantity,
-              reference: product.reference,
-              active: product.active,
-              categoryId: product.categoryId,
-              variants: product.variants,
-            );
-          }).toList();
-        } catch (e) {
-          print('Warning: Could not fetch stock data: $e');
-          // Continue with product data as is
-        }
+      // Case 4: Empty result
+      else {
+        return [];
       }
+
+      // Enrich products with additional data
+      products = await _enrichProducts(products);
 
       // Filter out-of-stock products if requested
       if (filterInStock) {
@@ -88,34 +100,244 @@ class ProductService {
     }
   }
 
+  /// Enrich products with stock, manufacturer, and discount data
+  Future<List<Product>> _enrichProducts(List<Product> products) async {
+    if (products.isEmpty) return products;
+
+    try {
+      // Fetch stock data
+      final productIds = products.map((p) => p.id).toList();
+      final stockMap = await _stockService.getStockForProducts(productIds);
+
+      // Fetch manufacturer names
+      final uniqueManufacturerIds = products
+          .where((p) => p.manufacturerId != null)
+          .map((p) => p.manufacturerId!)
+          .toSet()
+          .toList();
+
+      Map<String, String> manufacturerNames = {};
+      try {
+        final manufacturers = await _manufacturerService.getManufacturers();
+        for (var manufacturer in manufacturers) {
+          manufacturerNames[manufacturer.id] = manufacturer.name;
+        }
+      } catch (e) {
+        print('Warning: Could not fetch manufacturers: $e');
+      }
+
+      // Check for specific prices (discounts)
+      Map<String, SpecificPrice?> specificPrices = {};
+      for (var product in products) {
+        try {
+          final prices = await _specificPriceService.getSpecificPricesForProduct(product.id);
+          if (prices.isNotEmpty) {
+            specificPrices[product.id] = prices.first;
+          }
+        } catch (e) {
+          // Continue without discount data
+        }
+      }
+
+      // Update products with enriched data
+      return products.map((product) {
+        final stockQuantity = stockMap[product.id] ?? product.quantity;
+        final manufacturerName = product.manufacturerId != null
+            ? manufacturerNames[product.manufacturerId]
+            : null;
+        final specificPrice = specificPrices[product.id];
+
+        double? finalPrice;
+        double? discountPercent;
+        bool onSale = false;
+
+        if (specificPrice != null) {
+          finalPrice = specificPrice.calculateFinalPrice(product.price);
+          discountPercent = specificPrice.discountPercentage;
+          onSale = true;
+        }
+
+        return product.copyWith(
+          quantity: stockQuantity,
+          manufacturerName: manufacturerName,
+          reducedPrice: finalPrice,
+          onSale: onSale,
+          discountPercentage: discountPercent,
+        );
+      }).toList();
+    } catch (e) {
+      print('Warning: Could not enrich products: $e');
+      return products;
+    }
+  }
+
+  /// Get single product with full details (combinations, features, etc.)
   Future<Product> getProductById(String id) async {
     try {
       final response = await _apiService.get(
         '${ApiConfig.productsEndpoint}/$id',
-        queryParameters: {},
+        queryParameters: {'display': 'full'},
       );
 
-      if (response['product'] != null) {
-        return Product.fromJson(response['product']);
+      if (response['product'] == null) {
+        throw Exception('Product not found');
       }
 
-      throw Exception('Product not found');
+      Product product = Product.fromJson(response['product']);
+
+      // Enrich with additional data
+      final enrichedProducts = await _enrichProducts([product]);
+      return enrichedProducts.first;
     } catch (e) {
       throw Exception('Failed to fetch product: $e');
     }
   }
 
-  Future<List<Product>> searchProducts(String query, {bool filterInStock = true}) async {
-    return getProducts(searchQuery: query, filterInStock: filterInStock);
+  /// Get product combinations (variants)
+  Future<List<Combination>> getProductCombinations(String productId) async {
+    return await _combinationService.getCombinationsByProduct(productId);
   }
 
-  Future<List<Product>> getProductsByCategory(String categoryId, {bool filterInStock = true}) async {
-    return getProducts(categoryId: categoryId, filterInStock: filterInStock);
+  /// Get product features
+  Future<List<ProductFeature>> getProductFeatures(String productId) async {
+    return await _featureService.getProductFeatures(productId);
   }
 
-  Future<List<Product>> getFeaturedProducts({bool filterInStock = true}) async {
-    // Assuming featured products can be filtered by a specific attribute
-    // This implementation may vary based on PrestaShop configuration
-    return getProducts(limit: 10, filterInStock: filterInStock);
+  /// Get related products (same category, different product)
+  Future<List<Product>> getRelatedProducts(
+    String productId,
+    String categoryId, {
+    int limit = 10,
+  }) async {
+    try {
+      final products = await getProducts(
+        categoryId: categoryId,
+        limit: limit + 5, // Fetch extra in case current product is included
+      );
+
+      // Filter out current product
+      final relatedProducts = products.where((p) => p.id != productId).toList();
+
+      // Return only requested limit
+      return relatedProducts.take(limit).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch related products: $e');
+    }
+  }
+
+  /// Search products with pagination
+  Future<List<Product>> searchProducts(
+    String query, {
+    int? limit,
+    int? offset,
+    bool filterInStock = false,
+  }) async {
+    return getProducts(
+      searchQuery: query,
+      limit: limit,
+      offset: offset,
+      filterInStock: filterInStock,
+    );
+  }
+
+  /// Get products by category with pagination
+  Future<List<Product>> getProductsByCategory(
+    String categoryId, {
+    int? limit,
+    int? offset,
+    bool filterInStock = false,
+    String? sortBy,
+  }) async {
+    return getProducts(
+      categoryId: categoryId,
+      limit: limit,
+      offset: offset,
+      filterInStock: filterInStock,
+      sortBy: sortBy,
+    );
+  }
+
+  /// Get featured products (first X products or by specific logic)
+  Future<List<Product>> getFeaturedProducts({
+    int limit = 10,
+    bool filterInStock = false,
+  }) async {
+    // Implementation can vary based on PrestaShop configuration
+    // Option 1: Get first N products (newest)
+    // Option 2: Get products with specific feature/tag
+    // Option 3: Get products from featured category
+    return getProducts(
+      limit: limit,
+      filterInStock: filterInStock,
+      sortBy: 'id_DESC',
+    );
+  }
+
+  /// Get latest products
+  Future<List<Product>> getLatestProducts({
+    int limit = 10,
+    bool filterInStock = false,
+  }) async {
+    return getProducts(
+      limit: limit,
+      filterInStock: filterInStock,
+      sortBy: 'id_DESC',
+    );
+  }
+
+  /// Get products on sale
+  Future<List<Product>> getProductsOnSale({
+    int? limit,
+    int? offset,
+  }) async {
+    try {
+      // Get products with active specific prices
+      final productsOnSaleIds = await _specificPriceService.getProductsOnSale();
+
+      if (productsOnSaleIds.isEmpty) {
+        return [];
+      }
+
+      // Fetch products (PrestaShop might not support filtering by array of IDs directly)
+      // So we fetch products and filter them
+      final allProducts = await getProducts(limit: 100);
+      final onSaleProducts = allProducts
+          .where((p) => productsOnSaleIds.contains(p.id))
+          .toList();
+
+      return onSaleProducts;
+    } catch (e) {
+      throw Exception('Failed to fetch products on sale: $e');
+    }
+  }
+
+  /// Get products by manufacturer
+  Future<List<Product>> getProductsByManufacturer(
+    String manufacturerId, {
+    int? limit,
+    int? offset,
+  }) async {
+    return getProducts(
+      manufacturerId: manufacturerId,
+      limit: limit,
+      offset: offset,
+    );
+  }
+
+  /// Get products by price range
+  Future<List<Product>> getProductsByPriceRange(
+    double minPrice,
+    double maxPrice, {
+    String? categoryId,
+    int? limit,
+    int? offset,
+  }) async {
+    return getProducts(
+      minPrice: minPrice,
+      maxPrice: maxPrice,
+      categoryId: categoryId,
+      limit: limit,
+      offset: offset,
+    );
   }
 }

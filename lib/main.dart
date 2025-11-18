@@ -8,11 +8,13 @@ import 'services/product_service.dart';
 import 'services/category_service.dart';
 import 'services/order_service.dart';
 import 'services/customer_service.dart';
+import 'services/filter_service.dart';
 import 'providers/product_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/cart_provider.dart';
 import 'providers/order_provider.dart';
 import 'providers/auth_provider.dart';
+import 'providers/wishlist_provider.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/category/category_screen.dart';
 import 'screens/cart/cart_screen.dart';
@@ -44,11 +46,12 @@ class MyApp extends StatelessWidget {
     final categoryService = CategoryService(apiService);
     final orderService = OrderService(apiService);
     final customerService = CustomerService(apiService);
+    final filterService = FilterService(apiService);
 
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-          create: (_) => ProductProvider(productService),
+          create: (_) => ProductProvider(productService, filterService),
         ),
         ChangeNotifierProvider(
           create: (_) => CategoryProvider(categoryService),
@@ -61,6 +64,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => AuthProvider(customerService)..checkAuthentication(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => WishlistProvider(),
         ),
       ],
       child: MaterialApp(
@@ -104,7 +110,7 @@ class _MainScreenState extends State<MainScreen> {
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, -2),
             ),

@@ -17,7 +17,7 @@ class ApiService {
         'Accept': 'application/json',
       };
 
-  Future<Map<String, dynamic>> get(
+  Future<dynamic> get(
     String endpoint, {
     Map<String, String>? queryParameters,
   }) async {
@@ -132,13 +132,14 @@ class ApiService {
     }
   }
 
-  Map<String, dynamic> _handleResponse(http.Response response) {
+  dynamic _handleResponse(http.Response response) {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       if (response.body.isEmpty) {
         return {};
       }
       try {
-        return jsonDecode(response.body) as Map<String, dynamic>;
+        // Return dynamic to support both Map and List responses
+        return jsonDecode(response.body);
       } catch (e) {
         throw ApiException('Failed to parse response: $e');
       }
