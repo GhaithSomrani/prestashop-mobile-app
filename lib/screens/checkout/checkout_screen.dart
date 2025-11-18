@@ -137,7 +137,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Order failed: $e'),
-            backgroundColor: AppTheme.errorColor,
+            backgroundColor: AppTheme.errorRed,
           ),
         );
       }
@@ -395,7 +395,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.accentColor,
+                              color: AppTheme.accentBlue,
                             ),
                           ),
                         ],

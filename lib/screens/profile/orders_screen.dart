@@ -67,13 +67,13 @@ class OrdersScreen extends StatelessWidget {
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
-                              color: AppTheme.accentColor.withOpacity(0.1),
+                              color: AppTheme.accentBlue.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
                               order.orderState ?? 'Pending',
                               style: const TextStyle(
-                                color: AppTheme.accentColor,
+                                color: AppTheme.accentBlue,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -116,7 +116,7 @@ class OrdersScreen extends StatelessWidget {
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.accentColor,
+                              color: AppTheme.accentBlue,
                             ),
                           ),
                         ],
@@ -251,7 +251,7 @@ class OrdersScreen extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
-                          color: AppTheme.accentColor,
+                          color: AppTheme.accentBlue,
                         ),
                       ),
                     ],
