@@ -43,7 +43,7 @@ dependencies:
   pull_to_refresh: ^2.0.0
 
   # Intl for formatting
-  intl: ^0.19.0
+  intl: 0.20.2
 
 dev_dependencies:
   flutter_test:
