@@ -11,6 +11,7 @@ class Product {
   final List<String> images;
   final int quantity;
   final String? reference;
+  final String? ean13;
   final bool active;
   final String categoryId;
   final String? manufacturerId;
@@ -31,6 +32,7 @@ class Product {
     this.images = const [],
     required this.quantity,
     this.reference,
+    this.ean13,
     this.active = true,
     required this.categoryId,
     this.manufacturerId,
@@ -83,6 +85,7 @@ class Product {
             : [],
         quantity: parseQuantity(product['quantity']),
         reference: product['reference']?.toString(),
+        ean13: product['ean13']?.toString(),
         active: product['active'] == '1' || product['active'] == true,
         categoryId: product['id_category_default']?.toString() ?? '0',
         manufacturerId: product['id_manufacturer']?.toString(),
@@ -115,6 +118,7 @@ class Product {
       'images': images,
       'quantity': quantity,
       'reference': reference,
+      'ean13': ean13,
       'active': active,
       'id_category_default': categoryId,
       'id_manufacturer': manufacturerId,
@@ -138,6 +142,7 @@ class Product {
     List<String>? images,
     int? quantity,
     String? reference,
+    String? ean13,
     bool? active,
     String? categoryId,
     String? manufacturerId,
@@ -158,6 +163,7 @@ class Product {
       images: images ?? this.images,
       quantity: quantity ?? this.quantity,
       reference: reference ?? this.reference,
+      ean13: ean13 ?? this.ean13,
       active: active ?? this.active,
       categoryId: categoryId ?? this.categoryId,
       manufacturerId: manufacturerId ?? this.manufacturerId,

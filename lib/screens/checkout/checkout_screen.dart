@@ -109,9 +109,14 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       city: _cityController.text,
       postcode: _postcodeController.text,
       country: _countryController.text,
+      countryId: '1', // Default to country ID 1 - should be selected by user
       state: _stateController.text.isNotEmpty ? _stateController.text : null,
       phone: _phoneController.text,
     );
+
+    // Get shipping cost from selected method
+    final shippingCost = _shippingMethods
+        .firstWhere((m) => m['name'] == _selectedShipping)['price'] as double;
 
     try {
       await orderProvider.createOrder(
@@ -120,6 +125,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
         items: cart.items,
         carrierId: '1', // Default carrier ID
         paymentMethod: _selectedPayment,
+        shippingCost: shippingCost,
       );
 
       cart.clearCart();

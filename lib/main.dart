@@ -11,6 +11,7 @@ import 'services/customer_service.dart';
 import 'services/filter_service.dart';
 import 'services/cart_rule_service.dart';
 import 'services/carrier_service.dart';
+import 'services/cart_service.dart';
 import 'providers/product_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/cart_provider.dart';
@@ -48,11 +49,12 @@ class MyApp extends StatelessWidget {
 
     final productService = ProductService(apiService);
     final categoryService = CategoryService(apiService);
-    final orderService = OrderService(apiService);
     final customerService = CustomerService(apiService);
     final filterService = FilterService(apiService);
     final cartRuleService = CartRuleService(apiService);
     final carrierService = CarrierService(apiService);
+    final cartService = CartService(apiService);
+    final orderService = OrderService(apiService, cartService);
 
     return MultiProvider(
       providers: [

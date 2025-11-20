@@ -84,6 +84,7 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen> {
         items: cart.items,
         carrierId: selectedCarrier.id,
         paymentMethod: _selectedPayment,
+        shippingCost: selectedCarrier.price,
       );
 
       cart.clearCart();
