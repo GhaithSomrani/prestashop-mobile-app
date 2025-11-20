@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/address_provider.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/location_provider.dart';
 import '../../models/address.dart';
+import '../../models/country.dart';
+import '../../models/ps_state.dart';
 import '../../config/app_theme.dart';
 import '../../widgets/loading_widget.dart';
 
@@ -28,8 +31,9 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
   late TextEditingController _cityController;
   late TextEditingController _postcodeController;
   late TextEditingController _phoneController;
-  String _selectedCountry = 'United States';
-  String? _selectedState;
+
+  Country? _selectedCountry;
+  PsState? _selectedState;
 
   bool get isEditing => widget.address != null;
 
@@ -53,8 +57,47 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
     _phoneController = TextEditingController(
       text: address?.phone ?? customer?.phone ?? '',
     );
-    _selectedCountry = address?.country ?? 'United States';
-    _selectedState = address?.state;
+
+    // Load countries
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadCountries();
+    });
+  }
+
+  Future<void> _loadCountries() async {
+    final locationProvider = context.read<LocationProvider>();
+    await locationProvider.fetchCountries();
+
+    // Set initial country if editing
+    if (widget.address?.countryId != null && locationProvider.countries.isNotEmpty) {
+      final country = locationProvider.getCountryById(widget.address!.countryId!);
+      if (country != null) {
+        setState(() {
+          _selectedCountry = country;
+        });
+
+        // Load states for this country
+        if (country.containsStates) {
+          await locationProvider.fetchStatesByCountry(country.id);
+          if (widget.address?.stateId != null) {
+            final state = locationProvider.getStateById(widget.address!.stateId!);
+            if (state != null) {
+              setState(() {
+                _selectedState = state;
+              });
+            }
+          }
+        }
+      }
+    } else if (locationProvider.countries.isNotEmpty) {
+      // Default to first country
+      setState(() {
+        _selectedCountry = locationProvider.countries.first;
+      });
+      if (_selectedCountry!.containsStates) {
+        await locationProvider.fetchStatesByCountry(_selectedCountry!.id);
+      }
+    }
   }
 
   @override
@@ -86,6 +129,16 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
       return;
     }
 
+    if (_selectedCountry == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Please select a country'),
+          backgroundColor: AppTheme.errorRed,
+        ),
+      );
+      return;
+    }
+
     final address = Address(
       id: widget.address?.id,
       customerId: authProvider.currentCustomer!.id!,
@@ -96,8 +149,10 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
       address2: _address2Controller.text.isNotEmpty ? _address2Controller.text : null,
       city: _cityController.text,
       postcode: _postcodeController.text,
-      country: _selectedCountry,
-      state: _selectedState,
+      country: _selectedCountry!.name,
+      countryId: _selectedCountry!.id,
+      state: _selectedState?.name,
+      stateId: _selectedState?.id,
       phone: _phoneController.text.isNotEmpty ? _phoneController.text : null,
     );
 
@@ -141,10 +196,14 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
           ),
         ],
       ),
-      body: Consumer<AddressProvider>(
-        builder: (context, addressProvider, child) {
+      body: Consumer2<AddressProvider, LocationProvider>(
+        builder: (context, addressProvider, locationProvider, child) {
           if (addressProvider.isLoading) {
             return const LoadingWidget(message: 'Saving address...');
+          }
+
+          if (locationProvider.isLoading && locationProvider.countries.isEmpty) {
+            return const LoadingWidget(message: 'Loading countries...');
           }
 
           return SingleChildScrollView(
@@ -270,39 +329,51 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                   const SizedBox(height: 16),
 
                   // Country
-                  DropdownButtonFormField<String>(
+                  DropdownButtonFormField<Country>(
                     value: _selectedCountry,
                     decoration: const InputDecoration(
                       labelText: 'Country',
                       prefixIcon: Icon(Icons.flag),
                     ),
-                    items: _countries.map((country) {
+                    items: locationProvider.countries.map((country) {
                       return DropdownMenuItem(
                         value: country,
-                        child: Text(country),
+                        child: Text(country.name),
                       );
                     }).toList(),
-                    onChanged: (value) {
+                    onChanged: (value) async {
                       setState(() {
-                        _selectedCountry = value!;
+                        _selectedCountry = value;
                         _selectedState = null;
                       });
+
+                      if (value != null && value.containsStates) {
+                        await locationProvider.fetchStatesByCountry(value.id);
+                      } else {
+                        locationProvider.clearStates();
+                      }
+                    },
+                    validator: (value) {
+                      if (value == null) {
+                        return 'Country is required';
+                      }
+                      return null;
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // State (for US)
-                  if (_selectedCountry == 'United States')
-                    DropdownButtonFormField<String>(
+                  // State (if country has states)
+                  if (_selectedCountry?.containsStates == true && locationProvider.states.isNotEmpty)
+                    DropdownButtonFormField<PsState>(
                       value: _selectedState,
                       decoration: const InputDecoration(
-                        labelText: 'State',
+                        labelText: 'State/Region',
                         prefixIcon: Icon(Icons.map),
                       ),
-                      items: _usStates.map((state) {
+                      items: locationProvider.states.map((state) {
                         return DropdownMenuItem(
                           value: state,
-                          child: Text(state),
+                          child: Text(state.name),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -311,13 +382,14 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
                         });
                       },
                       validator: (value) {
-                        if (_selectedCountry == 'United States' && (value == null || value.isEmpty)) {
+                        if (_selectedCountry?.containsStates == true && value == null) {
                           return 'State is required';
                         }
                         return null;
                       },
                     ),
-                  const SizedBox(height: 16),
+                  if (_selectedCountry?.containsStates == true)
+                    const SizedBox(height: 16),
 
                   // Phone
                   TextFormField(
@@ -355,30 +427,4 @@ class _AddressFormScreenState extends State<AddressFormScreen> {
       ),
     );
   }
-
-  static const List<String> _countries = [
-    'United States',
-    'Canada',
-    'United Kingdom',
-    'France',
-    'Germany',
-    'Spain',
-    'Italy',
-    'Netherlands',
-    'Belgium',
-    'Australia',
-  ];
-
-  static const List<String> _usStates = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado',
-    'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho',
-    'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada',
-    'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
-    'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon',
-    'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
-    'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
-    'West Virginia', 'Wisconsin', 'Wyoming',
-  ];
 }
