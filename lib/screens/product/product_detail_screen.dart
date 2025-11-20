@@ -82,10 +82,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
       );
 
       // Collect all attribute group IDs
-      final attributeGroupIds = optionValues.values
-          .map((v) => v.optionId)
-          .toSet()
-          .toList();
+      final attributeGroupIds =
+          optionValues.values.map((v) => v.optionId).toSet().toList();
 
       // Batch fetch all attribute groups
       final attributeGroups = await optionService.getProductOptions(
@@ -180,12 +178,13 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
           // Set default combination index
           if (_selectedCombinationIndex == null && combinations.isNotEmpty) {
-            _selectedCombinationIndex = combinations.indexWhere((c) => c.defaultOn);
+            _selectedCombinationIndex =
+                combinations.indexWhere((c) => c.defaultOn);
             if (_selectedCombinationIndex == -1) _selectedCombinationIndex = 0;
           }
 
           final selectedCombination = _selectedCombinationIndex != null &&
-              _selectedCombinationIndex! < combinations.length
+                  _selectedCombinationIndex! < combinations.length
               ? combinations[_selectedCombinationIndex!]
               : null;
 
@@ -222,10 +221,12 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             manufacturerName: product.manufacturerName,
                             price: product.price,
                             finalPrice: selectedCombination != null
-                                ? product.price + selectedCombination.priceImpact
+                                ? product.price +
+                                    selectedCombination.priceImpact
                                 : product.finalPrice,
                             isOnSale: product.isOnSale,
-                            discountPercentage: product.calculatedDiscountPercentage,
+                            discountPercentage:
+                                product.calculatedDiscountPercentage,
                           ),
 
                           const SizedBox(height: 24),
@@ -246,21 +247,22 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
 
                           // Stock Status
                           _StockStatus(
-                            inStock: selectedCombination?.inStock ?? product.inStock,
-                            quantity: selectedCombination?.quantity ?? product.quantity,
+                            inStock:
+                                selectedCombination?.inStock ?? product.inStock,
+                            quantity: selectedCombination?.quantity ??
+                                product.quantity,
                           ),
 
                           const SizedBox(height: 24),
 
                           // Description Section
                           _DescriptionSection(
-                            description: product.description.isNotEmpty
-                                ? product.description
-                                : product.shortDescription,
+                            description: product.shortDescription,
                             isExpanded: _isDescriptionExpanded,
                             onToggle: () {
                               setState(() {
-                                _isDescriptionExpanded = !_isDescriptionExpanded;
+                                _isDescriptionExpanded =
+                                    !_isDescriptionExpanded;
                               });
                             },
                           ),
@@ -292,7 +294,8 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 right: 0,
                 child: _AddToCartBar(
                   quantity: _quantity,
-                  maxQuantity: selectedCombination?.quantity ?? product.quantity,
+                  maxQuantity:
+                      selectedCombination?.quantity ?? product.quantity,
                   inStock: selectedCombination?.inStock ?? product.inStock,
                   onQuantityChanged: (newQuantity) {
                     setState(() {
@@ -385,7 +388,8 @@ class _ProductImageCarousel extends StatelessWidget {
 
     // Add additional images from product
     for (var i = 0; i < images.length; i++) {
-      final url = '${ApiConfig.baseUrl}api/images/products/$productId/${images[i]}';
+      final url =
+          '${ApiConfig.baseUrl}api/images/products/$productId/${images[i]}';
       if (!imageUrls.contains(url)) {
         imageUrls.add(url);
       }
@@ -628,7 +632,9 @@ class _VariationSelector extends StatelessWidget {
         if (optionValue != null) {
           final group = attributeGroups[optionValue.optionId];
           final groupName = group?.publicName ?? group?.name ?? 'Option';
-          groupedAttributes.putIfAbsent(groupName, () => {}).add(optionValue.name);
+          groupedAttributes
+              .putIfAbsent(groupName, () => {})
+              .add(optionValue.name);
         }
       }
     }
@@ -686,7 +692,8 @@ class _VariationSelector extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               if (isColorGroup)
-                _buildColorSwatches(values, selectedValues[groupName], groupName)
+                _buildColorSwatches(
+                    values, selectedValues[groupName], groupName)
               else
                 _buildSizePills(values, selectedValues[groupName], groupName),
             ],
@@ -698,7 +705,9 @@ class _VariationSelector extends StatelessWidget {
 
   bool _isColorAttribute(String groupName) {
     final lower = groupName.toLowerCase();
-    return lower.contains('color') || lower.contains('colour') || lower.contains('couleur');
+    return lower.contains('color') ||
+        lower.contains('colour') ||
+        lower.contains('couleur');
   }
 
   Widget _buildSizePills(
@@ -712,7 +721,8 @@ class _VariationSelector extends StatelessWidget {
       children: values.map((value) {
         final isSelected = value == selectedValue;
         final comboIndex = _findCombinationWithAttribute(groupName, value);
-        final isAvailable = comboIndex != null && combinations[comboIndex].inStock;
+        final isAvailable =
+            comboIndex != null && combinations[comboIndex].inStock;
 
         return GestureDetector(
           onTap: comboIndex != null
@@ -764,7 +774,8 @@ class _VariationSelector extends StatelessWidget {
       children: values.map((value) {
         final isSelected = value == selectedValue;
         final comboIndex = _findCombinationWithAttribute(groupName, value);
-        final isAvailable = comboIndex != null && combinations[comboIndex].inStock;
+        final isAvailable =
+            comboIndex != null && combinations[comboIndex].inStock;
         final color = _getColorFromName(value);
 
         return GestureDetector(
