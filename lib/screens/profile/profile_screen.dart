@@ -6,6 +6,9 @@ import '../../config/app_theme.dart';
 import '../../widgets/loading_widget.dart';
 import 'login_screen.dart';
 import 'orders_screen.dart';
+import 'account_edit_screen.dart';
+import 'change_password_screen.dart';
+import '../address/address_list_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -165,8 +168,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Saved Addresses',
                   subtitle: 'Manage delivery addresses',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Coming soon')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddressListScreen(),
+                      ),
                     );
                   },
                 ),
@@ -176,8 +182,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Edit Profile',
                   subtitle: 'Update your information',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Coming soon')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AccountEditScreen(),
+                      ),
                     );
                   },
                 ),
@@ -187,8 +196,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   title: 'Change Password',
                   subtitle: 'Update your password',
                   onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Coming soon')),
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ChangePasswordScreen(),
+                      ),
                     );
                   },
                 ),

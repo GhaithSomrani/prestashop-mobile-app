@@ -3,13 +3,19 @@
 This document provides practical code examples for implementing all features of the PrestaShop mobile application.
 
 ## Table of Contents
-1. [Infinite Scroll Implementation](#infinite-scroll-implementation)
-2. [Dynamic Filter Implementation](#dynamic-filter-implementation)
-3. [Product Detail Page with Combinations](#product-detail-page)
-4. [Category Page Complete Example](#category-page-example)
-5. [Search with Filters](#search-with-filters)
-6. [Cart & Checkout Flow](#cart-checkout)
-7. [Provider Setup](#provider-setup)
+- [PrestaShop Mobile App - Implementation Examples](#prestashop-mobile-app---implementation-examples)
+  - [Table of Contents](#table-of-contents)
+  - [1. Infinite Scroll Implementation](#1-infinite-scroll-implementation)
+    - [Category Products Screen with Infinite Scroll](#category-products-screen-with-infinite-scroll)
+  - [2. Dynamic Filter Implementation](#2-dynamic-filter-implementation)
+    - [Using Dynamic Filters](#using-dynamic-filters)
+  - [3. Product Detail Page with Combinations](#3-product-detail-page-with-combinations)
+  - [4. Provider Setup in main.dart](#4-provider-setup-in-maindart)
+  - [5. Key Implementation Points](#5-key-implementation-points)
+    - [Infinite Scroll Pattern](#infinite-scroll-pattern)
+    - [Dynamic Filter Pattern](#dynamic-filter-pattern)
+    - [State Management Pattern](#state-management-pattern)
+    - [Performance Optimization](#performance-optimization)
 
 ---
 
@@ -288,8 +294,8 @@ class _DynamicFilterBottomSheetState extends State<DynamicFilterBottomSheet> {
                         max: filterData.maxPrice,
                         divisions: 20,
                         labels: RangeLabels(
-                          '\$${minPrice.toStringAsFixed(0)}',
-                          '\$${maxPrice.toStringAsFixed(0)}',
+                          '${minPrice.toStringAsFixed(0)} TND',
+                          '${maxPrice.toStringAsFixed(0)} TND',
                         ),
                         onChanged: (values) {
                           setState(() {
@@ -523,7 +529,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         children: [
                           if (product.isOnSale) ...[
                             Text(
-                              '\$${product.price.toStringAsFixed(2)}',
+                              '${product.price.toStringAsFixed(2)} TND',
                               style: TextStyle(
                                 fontSize: 18,
                                 decoration: TextDecoration.lineThrough,
@@ -532,7 +538,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              '\$${product.finalPrice.toStringAsFixed(2)}',
+                              '${product.finalPrice.toStringAsFixed(2)} TND',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -553,7 +559,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ] else
                             Text(
-                              '\$${product.finalPrice.toStringAsFixed(2)}',
+                              '${product.finalPrice.toStringAsFixed(2)} TND',
                               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                         ],

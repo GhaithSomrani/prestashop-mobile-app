@@ -1,6 +1,5 @@
 import '../models/product.dart';
 import '../models/combination.dart';
-import '../models/manufacturer.dart';
 import '../models/specific_price.dart';
 import '../models/feature.dart';
 import '../config/api_config.dart';
@@ -107,15 +106,16 @@ class ProductService {
     try {
       // Fetch stock data
       final productIds = products.map((p) => p.id).toList();
-      final stockMap = await _stockService.getStockForProducts(productIds);
+      final stockDataMap = await _stockService.getStockForProducts(productIds);
+
+      // Convert to quantity map
+      final stockMap = <String, int>{};
+      for (final entry in stockDataMap.entries) {
+        final stocks = entry.value;
+        stockMap[entry.key] = stocks.fold<int>(0, (sum, stock) => sum + stock.quantity);
+      }
 
       // Fetch manufacturer names
-      final uniqueManufacturerIds = products
-          .where((p) => p.manufacturerId != null)
-          .map((p) => p.manufacturerId!)
-          .toSet()
-          .toList();
-
       Map<String, String> manufacturerNames = {};
       try {
         final manufacturers = await _manufacturerService.getManufacturers();
@@ -176,7 +176,7 @@ class ProductService {
     try {
       final response = await _apiService.get(
         '${ApiConfig.productsEndpoint}/$id',
-        queryParameters: {'display': 'full'},
+        queryParameters: {},
       );
 
       if (response['product'] == null) {
@@ -339,5 +339,80 @@ class ProductService {
       limit: limit,
       offset: offset,
     );
+  }
+
+  /// Get best selling products
+  /// Note: PrestaShop tracks sales in orders, this is a simplified version
+  /// In production, you'd query order_detail and aggregate by product_id
+  Future<List<Product>> getBestSellingProducts({
+    int limit = 10,
+    bool filterInStock = false,
+  }) async {
+    try {
+      // Get products sorted by sales (position in PrestaShop often reflects popularity)
+      final queryParams = <String, String>{
+        'display': 'full',
+        'limit': '$limit',
+        'filter[active]': '1',
+        'sort': '[position_ASC]', // Products with better position are often best sellers
+      };
+
+      final response = await _apiService.get(
+        ApiConfig.productsEndpoint,
+        queryParameters: queryParams,
+      );
+
+      List<Product> products = [];
+
+      if (response is List) {
+        if (response.isEmpty) return [];
+        products = response
+            .map((productJson) => Product.fromJson(productJson))
+            .toList();
+      } else if (response is Map && response['products'] != null) {
+        final productsData = response['products'];
+        if (productsData is List) {
+          products = productsData
+              .map((productJson) => Product.fromJson(productJson))
+              .toList();
+        } else if (productsData is Map) {
+          products = [Product.fromJson(productsData as Map<String, dynamic>)];
+        }
+      }
+
+      products = await _enrichProducts(products);
+
+      if (filterInStock) {
+        products = products.where((product) => product.inStock).toList();
+      }
+
+      return products;
+    } catch (e) {
+      throw Exception('Failed to fetch best selling products: $e');
+    }
+  }
+
+  /// Get products with price drops (on sale with significant discount)
+  Future<List<Product>> getPricesDropProducts({
+    int limit = 10,
+    double minimumDiscount = 10.0, // Minimum discount percentage
+  }) async {
+    try {
+      // Get all products on sale
+      final onSaleProducts = await getProductsOnSale(limit: 100);
+
+      // Filter by minimum discount
+      final pricesDropProducts = onSaleProducts
+          .where((p) => (p.discountPercentage ?? 0) >= minimumDiscount)
+          .toList();
+
+      // Sort by discount percentage (highest first)
+      pricesDropProducts.sort((a, b) =>
+          (b.discountPercentage ?? 0).compareTo(a.discountPercentage ?? 0));
+
+      return pricesDropProducts.take(limit).toList();
+    } catch (e) {
+      throw Exception('Failed to fetch prices drop products: $e');
+    }
   }
 }

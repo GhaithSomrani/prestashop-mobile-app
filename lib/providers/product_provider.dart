@@ -16,6 +16,8 @@ class ProductProvider with ChangeNotifier {
   List<Product> _products = [];
   List<Product> _featuredProducts = [];
   List<Product> _latestProducts = [];
+  List<Product> _bestSalesProducts = [];
+  List<Product> _pricesDropProducts = [];
   List<Product> _relatedProducts = [];
   Product? _selectedProduct;
 
@@ -40,6 +42,8 @@ class ProductProvider with ChangeNotifier {
   List<Product> get products => _products;
   List<Product> get featuredProducts => _featuredProducts;
   List<Product> get latestProducts => _latestProducts;
+  List<Product> get bestSalesProducts => _bestSalesProducts;
+  List<Product> get pricesDropProducts => _pricesDropProducts;
   List<Product> get relatedProducts => _relatedProducts;
   Product? get selectedProduct => _selectedProduct;
   List<Combination> get productCombinations => _productCombinations;
@@ -238,6 +242,40 @@ class ProductProvider with ChangeNotifier {
         print('Error fetching latest products: $e');
       }
     }
+  }
+
+  /// Fetch best selling products
+  Future<void> fetchBestSalesProducts() async {
+    try {
+      _bestSalesProducts = await _productService.getBestSellingProducts(limit: 10);
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching best sales products: $e');
+      }
+    }
+  }
+
+  /// Fetch products with price drops
+  Future<void> fetchPricesDropProducts() async {
+    try {
+      _pricesDropProducts = await _productService.getPricesDropProducts(limit: 10);
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error fetching prices drop products: $e');
+      }
+    }
+  }
+
+  /// Fetch all home page products at once
+  Future<void> fetchHomeProducts() async {
+    await Future.wait([
+      fetchFeaturedProducts(),
+      fetchLatestProducts(),
+      fetchBestSalesProducts(),
+      fetchPricesDropProducts(),
+    ]);
   }
 
   /// Fetch product by ID with all details

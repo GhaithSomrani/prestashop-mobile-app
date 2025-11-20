@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 class Product {
   final String id;
   final String name;
@@ -65,9 +67,9 @@ class Product {
 
       return Product(
         id: product['id']?.toString() ?? '',
-        name: product['name']?.toString() ?? '',
-        description: product['description']?.toString() ?? '',
-        shortDescription: product['description_short']?.toString() ?? '',
+        name: LanguageHelper.extractValueOrEmpty(product['name']),
+        description: LanguageHelper.extractValueOrEmpty(product['description']),
+        shortDescription: LanguageHelper.extractValueOrEmpty(product['description_short']),
         price: parsePrice(product['price']),
         reducedPrice: product['price_final'] != null
             ? parsePrice(product['price_final'])

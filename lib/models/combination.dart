@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 /// Model for PrestaShop product combination (variants like size, color)
 class Combination {
   final String id;
@@ -33,6 +35,25 @@ class Combination {
       return int.tryParse(value.toString()) ?? 0;
     }
 
+    // Parse product option values from associations
+    List<CombinationAttribute> attributes = [];
+    if (json['associations']?['product_option_values'] != null) {
+      var optionValues = json['associations']['product_option_values'];
+
+      // Handle XML nested structure
+      if (optionValues is Map && optionValues['product_option_value'] != null) {
+        optionValues = optionValues['product_option_value'];
+      }
+
+      if (optionValues is List) {
+        attributes = optionValues
+            .map((attr) => CombinationAttribute.fromJson(attr as Map<String, dynamic>))
+            .toList();
+      } else if (optionValues is Map) {
+        attributes = [CombinationAttribute.fromJson(optionValues as Map<String, dynamic>)];
+      }
+    }
+
     return Combination(
       id: json['id']?.toString() ?? '',
       idProduct: json['id_product']?.toString() ?? '',
@@ -40,11 +61,7 @@ class Combination {
       priceImpact: parsePriceImpact(json['price']),
       quantity: parseQuantity(json['quantity']),
       defaultOn: json['default_on'] == '1' || json['default_on'] == true,
-      attributes: json['associations']?['product_option_values'] != null
-          ? (json['associations']['product_option_values'] as List)
-              .map((attr) => CombinationAttribute.fromJson(attr))
-              .toList()
-          : [],
+      attributes: attributes,
     );
   }
 
@@ -76,8 +93,8 @@ class CombinationAttribute {
   factory CombinationAttribute.fromJson(Map<String, dynamic> json) {
     return CombinationAttribute(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
-      value: json['value']?.toString() ?? '',
+      name: LanguageHelper.extractValueOrEmpty(json['name']),
+      value: LanguageHelper.extractValueOrEmpty(json['value']),
     );
   }
 

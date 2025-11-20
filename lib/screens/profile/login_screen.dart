@@ -4,6 +4,7 @@ import 'package:email_validator/email_validator.dart';
 import '../../providers/auth_provider.dart';
 import '../../config/app_theme.dart';
 import '../../widgets/loading_widget.dart';
+import 'password_reset_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -213,7 +214,24 @@ class _LoginScreenState extends State<LoginScreen> {
                       return null;
                     },
                   ),
-                  const SizedBox(height: 32),
+                  if (_isLogin) ...[
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PasswordResetScreen(),
+                            ),
+                          );
+                        },
+                        child: const Text('Forgot Password?'),
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 24),
 
                   // Submit Button
                   ElevatedButton(

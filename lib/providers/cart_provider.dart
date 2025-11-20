@@ -3,19 +3,35 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import '../models/cart_item.dart';
 import '../models/product.dart';
+import '../models/cart_rule.dart';
+import '../services/cart_rule_service.dart';
 
 class CartProvider with ChangeNotifier {
+  final CartRuleService? _cartRuleService;
+
+  CartProvider({CartRuleService? cartRuleService}) : _cartRuleService = cartRuleService;
+
   List<CartItem> _items = [];
+  List<AppliedVoucher> _appliedVouchers = [];
   static const String _cartKey = 'cart_items';
+  static const String _vouchersKey = 'applied_vouchers';
 
   List<CartItem> get items => _items;
+  List<AppliedVoucher> get appliedVouchers => _appliedVouchers;
 
   int get itemCount => _items.fold(0, (sum, item) => sum + item.quantity);
 
-  double get totalAmount =>
+  double get subtotal =>
       _items.fold(0, (sum, item) => sum + item.totalPrice);
 
+  double get totalDiscount =>
+      _appliedVouchers.fold(0, (sum, voucher) => sum + voucher.discountAmount);
+
+  double get totalAmount => subtotal - totalDiscount;
+
   bool get isEmpty => _items.isEmpty;
+  bool get hasVouchers => _appliedVouchers.isNotEmpty;
+  bool get hasFreeShipping => _appliedVouchers.any((v) => v.cartRule.freeShipping);
 
   Future<void> loadCart() async {
     try {
@@ -24,8 +40,18 @@ class CartProvider with ChangeNotifier {
       if (cartData != null) {
         final List<dynamic> decodedData = jsonDecode(cartData);
         _items = decodedData.map((item) => CartItem.fromJson(item)).toList();
-        notifyListeners();
       }
+
+      // Load vouchers
+      final vouchersData = prefs.getString(_vouchersKey);
+      if (vouchersData != null) {
+        final List<dynamic> decodedVouchers = jsonDecode(vouchersData);
+        _appliedVouchers = decodedVouchers
+            .map((v) => AppliedVoucher.fromJson(v))
+            .toList();
+        _recalculateDiscounts();
+      }
+      notifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print('Error loading cart: $e');
@@ -38,10 +64,25 @@ class CartProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final cartData = jsonEncode(_items.map((item) => item.toJson()).toList());
       await prefs.setString(_cartKey, cartData);
+
+      // Save vouchers
+      final vouchersData = jsonEncode(_appliedVouchers.map((v) => v.toJson()).toList());
+      await prefs.setString(_vouchersKey, vouchersData);
     } catch (e) {
       if (kDebugMode) {
         print('Error saving cart: $e');
       }
+    }
+  }
+
+  void _recalculateDiscounts() {
+    for (int i = 0; i < _appliedVouchers.length; i++) {
+      final voucher = _appliedVouchers[i];
+      final newDiscount = voucher.cartRule.calculateDiscount(subtotal);
+      _appliedVouchers[i] = AppliedVoucher(
+        cartRule: voucher.cartRule,
+        discountAmount: newDiscount,
+      );
     }
   }
 
@@ -147,5 +188,78 @@ class CartProvider with ChangeNotifier {
           (variantId == null || item.variantId == variantId),
     );
     return index >= 0 ? _items[index].quantity : 0;
+  }
+
+  // Voucher methods
+  Future<bool> addVoucher(String code) async {
+    if (_cartRuleService == null) {
+      throw Exception('Cart rule service not available');
+    }
+
+    try {
+      // Check if voucher is already applied
+      if (_appliedVouchers.any((v) => v.cartRule.code == code)) {
+        throw Exception('Voucher already applied');
+      }
+
+      final cartRule = await _cartRuleService!.getCartRuleByCode(code);
+      if (cartRule == null) {
+        throw Exception('Invalid voucher code');
+      }
+
+      if (!cartRule.isValid) {
+        throw Exception('Voucher has expired or is no longer valid');
+      }
+
+      if (subtotal < cartRule.minimumAmount) {
+        throw Exception('Minimum order amount of ${cartRule.minimumAmount.toStringAsFixed(2)} TND required');
+      }
+
+      final discount = cartRule.calculateDiscount(subtotal);
+      _appliedVouchers.add(AppliedVoucher(
+        cartRule: cartRule,
+        discountAmount: discount,
+      ));
+
+      _saveCart();
+      notifyListeners();
+      return true;
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error adding voucher: $e');
+      }
+      rethrow;
+    }
+  }
+
+  void removeVoucher(String code) {
+    _appliedVouchers.removeWhere((v) => v.cartRule.code == code);
+    _saveCart();
+    notifyListeners();
+  }
+
+  void clearVouchers() {
+    _appliedVouchers.clear();
+    _saveCart();
+    notifyListeners();
+  }
+
+  bool isVoucherApplied(String code) {
+    return _appliedVouchers.any((v) => v.cartRule.code == code);
+  }
+
+  // Get cart summary for checkout
+  Map<String, dynamic> getCartSummary() {
+    return {
+      'items': _items.map((i) => i.toJson()).toList(),
+      'subtotal': subtotal,
+      'discount': totalDiscount,
+      'total': totalAmount,
+      'vouchers': _appliedVouchers.map((v) => {
+        'code': v.cartRule.code,
+        'discount': v.discountAmount,
+      }).toList(),
+      'free_shipping': hasFreeShipping,
+    };
   }
 }

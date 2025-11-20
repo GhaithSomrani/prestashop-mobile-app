@@ -234,7 +234,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         ),
                       ),
                       Text(
-                        '\$${widget.totalAmount.toStringAsFixed(2)}',
+                        '${widget.totalAmount.toStringAsFixed(2)} TND',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

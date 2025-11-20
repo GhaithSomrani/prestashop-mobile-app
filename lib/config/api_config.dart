@@ -25,9 +25,14 @@ class ApiConfig {
   static const String manufacturersEndpoint = 'api/manufacturers';
   static const String specificPricesEndpoint = 'api/specific_prices';
   static const String searchEndpoint = 'api/search';
+  static const String cartRulesEndpoint = 'api/cart_rules';
+  static const String countriesEndpoint = 'api/countries';
+  static const String statesEndpoint = 'api/states';
+  static const String orderHistoriesEndpoint = 'api/order_histories';
+  static const String orderPaymentsEndpoint = 'api/order_payments';
 
   // Request parameters
-  static const String outputFormat = 'JSON'; // or 'XML'
+  static const String outputFormat = 'XML'; // Changed to XML format
   static const String language = 'en';
   static const int defaultLimit = 20;
 }

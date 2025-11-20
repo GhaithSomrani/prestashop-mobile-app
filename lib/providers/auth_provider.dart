@@ -147,4 +147,65 @@ class AuthProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  Future<void> updatePassword(String currentPassword, String newPassword) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      if (_currentCustomer?.id == null) {
+        throw Exception('User not authenticated');
+      }
+
+      await _customerService.updatePassword(_currentCustomer!.id!, newPassword);
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+      if (kDebugMode) {
+        print('Error updating password: $e');
+      }
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> requestPasswordReset(String email) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _customerService.requestPasswordReset(email);
+      _error = null;
+    } catch (e) {
+      _error = e.toString();
+      if (kDebugMode) {
+        print('Error requesting password reset: $e');
+      }
+      rethrow;
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> refreshCustomerData() async {
+    if (_currentCustomer?.id == null) return;
+
+    try {
+      _currentCustomer = await _customerService.getCustomerById(_currentCustomer!.id!);
+      await _secureStorage.write(
+        key: _customerKey,
+        value: jsonEncode(_currentCustomer!.toJson()),
+      );
+      notifyListeners();
+    } catch (e) {
+      if (kDebugMode) {
+        print('Error refreshing customer data: $e');
+      }
+    }
+  }
 }

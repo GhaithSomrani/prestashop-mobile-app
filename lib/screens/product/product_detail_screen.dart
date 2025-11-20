@@ -113,7 +113,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         children: [
                           if (product.isOnSale) ...[
                             Text(
-                              '\$${product.price.toStringAsFixed(2)}',
+                              '${product.price.toStringAsFixed(2)} TND',
                               style: const TextStyle(
                                 decoration: TextDecoration.lineThrough,
                                 color: Colors.grey,
@@ -123,7 +123,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             const SizedBox(width: 8),
                           ],
                           Text(
-                            '\$${product.finalPrice.toStringAsFixed(2)}',
+                            '${product.finalPrice.toStringAsFixed(2)} TND',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,

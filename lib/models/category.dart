@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 class Category {
   final String id;
   final String name;
@@ -23,8 +25,8 @@ class Category {
 
       return Category(
         id: category['id']?.toString() ?? '',
-        name: category['name']?.toString() ?? '',
-        description: category['description']?.toString(),
+        name: LanguageHelper.extractValueOrEmpty(category['name']),
+        description: LanguageHelper.extractValue(category['description']),
         imageUrl: category['image_url']?.toString(),
         parentId: category['id_parent']?.toString(),
         active: category['active'] == '1' || category['active'] == true,
