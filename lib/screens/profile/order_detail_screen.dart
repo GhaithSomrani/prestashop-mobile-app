@@ -276,7 +276,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          item.productName,
+                          item.product.name,
                           style: const TextStyle(fontWeight: FontWeight.w500),
                         ),
                         const SizedBox(height: 4),
@@ -348,8 +348,8 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             const Divider(),
             _buildSummaryRow('Subtotal', CurrencyFormatter.formatTND(order.totalProducts)),
             _buildSummaryRow('Shipping', CurrencyFormatter.formatTND(order.totalShipping)),
-            if (order.totalDiscounts > 0)
-              _buildSummaryRow('Discount', '-${CurrencyFormatter.formatTND(order.totalDiscounts)}', isDiscount: true),
+            if (order.totalDiscount > 0)
+              _buildSummaryRow('Discount', '-${CurrencyFormatter.formatTND(order.totalDiscount)}', isDiscount: true),
             const Divider(),
             _buildSummaryRow(
               'Total',
@@ -408,7 +408,7 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
             const SizedBox(height: 12),
             Text(
-              order.payment ?? 'N/A',
+              order.paymentMethod.isNotEmpty ? order.paymentMethod : 'N/A',
               style: TextStyle(color: Colors.grey[600]),
             ),
           ],
