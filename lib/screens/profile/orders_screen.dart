@@ -112,7 +112,7 @@ class OrdersScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '\$${order.totalPaid.toStringAsFixed(2)}',
+                            'TND${order.totalPaid.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -218,7 +218,7 @@ class OrdersScreen extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            '\$${item.totalPrice.toStringAsFixed(2)}',
+                            'TND${item.totalPrice.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
@@ -231,10 +231,10 @@ class OrdersScreen extends StatelessWidget {
                   const SizedBox(height: 16),
                   const Divider(),
                   const SizedBox(height: 16),
-                  _buildDetailRow('Subtotal', '\$${order.totalProducts.toStringAsFixed(2)}'),
-                  _buildDetailRow('Shipping', '\$${order.totalShipping.toStringAsFixed(2)}'),
+                  _buildDetailRow('Subtotal', 'TND${order.totalProducts.toStringAsFixed(2)}'),
+                  _buildDetailRow('Shipping', 'TND${order.totalShipping.toStringAsFixed(2)}'),
                   if (order.totalDiscount > 0)
-                    _buildDetailRow('Discount', '-\$${order.totalDiscount.toStringAsFixed(2)}'),
+                    _buildDetailRow('Discount', '-TND${order.totalDiscount.toStringAsFixed(2)}'),
                   const SizedBox(height: 8),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -247,7 +247,7 @@ class OrdersScreen extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '\$${order.totalPaid.toStringAsFixed(2)}',
+                        'TND${order.totalPaid.toStringAsFixed(2)}',
                         style: const TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,

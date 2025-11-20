@@ -288,8 +288,8 @@ class _DynamicFilterBottomSheetState extends State<DynamicFilterBottomSheet> {
                         max: filterData.maxPrice,
                         divisions: 20,
                         labels: RangeLabels(
-                          '\$${minPrice.toStringAsFixed(0)}',
-                          '\$${maxPrice.toStringAsFixed(0)}',
+                          'TND${minPrice.toStringAsFixed(0)}',
+                          'TND${maxPrice.toStringAsFixed(0)}',
                         ),
                         onChanged: (values) {
                           setState(() {
@@ -523,7 +523,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         children: [
                           if (product.isOnSale) ...[
                             Text(
-                              '\$${product.price.toStringAsFixed(2)}',
+                              'TND${product.price.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 18,
                                 decoration: TextDecoration.lineThrough,
@@ -532,7 +532,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                             SizedBox(width: 8),
                             Text(
-                              '\$${product.finalPrice.toStringAsFixed(2)}',
+                              'TND${product.finalPrice.toStringAsFixed(2)}',
                               style: TextStyle(
                                 fontSize: 24,
                                 fontWeight: FontWeight.bold,
@@ -553,7 +553,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             ),
                           ] else
                             Text(
-                              '\$${product.finalPrice.toStringAsFixed(2)}',
+                              'TND${product.finalPrice.toStringAsFixed(2)}',
                               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                             ),
                         ],

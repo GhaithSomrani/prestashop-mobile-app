@@ -773,7 +773,7 @@ void main() {
     );
 
     expect(find.text('Test Product'), findsOneWidget);
-    expect(find.text('\$99.99'), findsOneWidget);
+    expect(find.text('TND99.99'), findsOneWidget);
   });
 }
 ```

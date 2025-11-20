@@ -320,7 +320,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         return RadioListTile<String>(
                           title: Text(method['name']),
                           subtitle: Text(
-                            '${method['days']} - \$${method['price'].toStringAsFixed(2)}',
+                            '${method['days']} - TND${method['price'].toStringAsFixed(2)}',
                           ),
                           value: method['name'],
                           groupValue: _selectedShipping,
@@ -367,7 +367,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Subtotal:'),
-                          Text('\$${cart.totalAmount.toStringAsFixed(2)}'),
+                          Text('TND${cart.totalAmount.toStringAsFixed(2)}'),
                         ],
                       ),
                       const SizedBox(height: 8),
@@ -375,7 +375,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Shipping:'),
-                          Text('\$${shippingCost.toStringAsFixed(2)}'),
+                          Text('TND${shippingCost.toStringAsFixed(2)}'),
                         ],
                       ),
                       const Divider(),
@@ -391,7 +391,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                           ),
                           Text(
-                            '\$${total.toStringAsFixed(2)}',
+                            'TND${total.toStringAsFixed(2)}',
                             style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

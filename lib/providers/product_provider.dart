@@ -25,7 +25,7 @@ class ProductProvider with ChangeNotifier {
 
   // Pagination state
   int _currentOffset = 0;
-  int _pageSize = ApiConfig.defaultLimit; // 20 products per page
+  final int _pageSize = ApiConfig.defaultLimit; // 20 products per page
   bool _hasMore = true;
   bool _isLoadingMore = false;
 
@@ -58,7 +58,7 @@ class ProductProvider with ChangeNotifier {
     String? manufacturerId,
     double? minPrice,
     double? maxPrice,
-    bool filterInStock = false,
+    bool filterInStock = true,
     String? sortBy,
     bool reset = true,
   }) async {
@@ -123,7 +123,7 @@ class ProductProvider with ChangeNotifier {
     String? manufacturerId,
     double? minPrice,
     double? maxPrice,
-    bool filterInStock = false,
+    bool filterInStock = true,
     String? sortBy,
   }) async {
     if (_isLoadingMore || !_hasMore || _isLoading) return;
@@ -167,7 +167,7 @@ class ProductProvider with ChangeNotifier {
   /// Fetch products by category with pagination
   Future<void> fetchProductsByCategory(
     String categoryId, {
-    bool filterInStock = false,
+    bool filterInStock = true,
     String? sortBy,
     bool reset = true,
   }) async {
@@ -182,7 +182,7 @@ class ProductProvider with ChangeNotifier {
   /// Load more products for category
   Future<void> loadMoreCategoryProducts(
     String categoryId, {
-    bool filterInStock = false,
+    bool filterInStock = true,
     String? sortBy,
   }) async {
     return loadMoreProducts(
@@ -253,7 +253,7 @@ class ProductProvider with ChangeNotifier {
 
       // Fetch combinations if product has variants
       if (_selectedProduct!.defaultCombinationId != null) {
-        _productCombinations = await _productService.getProductCombinations(id);
+        _productCombinations = await _productService.getProductCombinationsAsCombinationModels(id);
       }
 
       // Fetch product features

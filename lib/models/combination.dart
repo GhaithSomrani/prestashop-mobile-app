@@ -59,6 +59,27 @@ class Combination {
       'attributes': attributes.map((attr) => attr.toJson()).toList(),
     };
   }
+
+  /// Copy with method for easier updates
+  Combination copyWith({
+    String? id,
+    String? idProduct,
+    String? reference,
+    double? priceImpact,
+    int? quantity,
+    bool? defaultOn,
+    List<CombinationAttribute>? attributes,
+  }) {
+    return Combination(
+      id: id ?? this.id,
+      idProduct: idProduct ?? this.idProduct,
+      reference: reference ?? this.reference,
+      priceImpact: priceImpact ?? this.priceImpact,
+      quantity: quantity ?? this.quantity,
+      defaultOn: defaultOn ?? this.defaultOn,
+      attributes: attributes ?? this.attributes,
+    );
+  }
 }
 
 /// Attribute associated with a combination (e.g., Color: Red, Size: M)

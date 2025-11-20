@@ -111,9 +111,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       // Price
                       Row(
                         children: [
-                          if (product.isOnSale) ...[
+                          if (product.reducedPrice != null &&
+                              product.reducedPrice! < product.price) ...[
                             Text(
-                              '\$${product.price.toStringAsFixed(2)}',
+                              'TND${product.price.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 decoration: TextDecoration.lineThrough,
                                 color: Colors.grey,
@@ -123,16 +124,18 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             const SizedBox(width: 8),
                           ],
                           Text(
-                            '\$${product.finalPrice.toStringAsFixed(2)}',
+                            'TND${product.finalPrice.toStringAsFixed(2)}',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: product.isOnSale
+                              color: (product.reducedPrice != null &&
+                                      product.reducedPrice! < product.price)
                                   ? AppTheme.errorRed
                                   : AppTheme.primaryBlack,
                             ),
                           ),
-                          if (product.isOnSale) ...[
+                          if (product.reducedPrice != null &&
+                              product.reducedPrice! < product.price) ...[
                             const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -156,27 +159,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                       const SizedBox(height: 16),
 
-                      // Stock Status
+                      // Stock Status - all products are in stock now
                       Row(
                         children: [
                           Icon(
-                            product.inStock
-                                ? Icons.check_circle
-                                : Icons.cancel,
-                            color: product.inStock
-                                ? AppTheme.successGreen
-                                : AppTheme.errorRed,
+                            Icons.check_circle,
+                            color: AppTheme.successGreen,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            product.inStock
-                                ? 'In Stock (${product.quantity} available)'
-                                : 'Out of Stock',
+                            'In Stock',
                             style: TextStyle(
-                              color: product.inStock
-                                  ? AppTheme.successGreen
-                                  : AppTheme.errorRed,
+                              color: AppTheme.successGreen,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -297,21 +292,19 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: ElevatedButton(
-                onPressed: product.inStock
-                    ? () {
-                        cartProvider.addItem(
-                          product,
-                          quantity: _quantity,
-                          variantId: _selectedVariantId,
-                        );
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Added to cart'),
-                            duration: Duration(seconds: 2),
-                          ),
-                        );
-                      }
-                    : null,
+                onPressed: () {
+                  cartProvider.addItem(
+                    product,
+                    quantity: _quantity,
+                    variantId: _selectedVariantId,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Added to cart'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),

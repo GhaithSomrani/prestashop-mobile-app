@@ -81,8 +81,8 @@ class ProductCard extends StatelessWidget {
                           ),
                   ),
 
-                  // Sale Badge
-                  if (product.isOnSale)
+                  // Sale Badge - only show when there's a valid discount
+                  if (product.reducedPrice != null && product.reducedPrice! < product.price && product.calculatedDiscountPercentage > 0)
                     Positioned(
                       top: AppTheme.spacing1,
                       left: AppTheme.spacing1,
@@ -101,29 +101,6 @@ class ProductCard extends StatelessWidget {
                             color: AppTheme.pureWhite,
                             fontWeight: FontWeight.bold,
                             fontSize: 11,
-                          ),
-                        ),
-                      ),
-                    ),
-
-                  // Out of Stock Overlay
-                  if (!product.inStock)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.8),
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(AppTheme.radiusMedium),
-                          ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            l10n?.outOfStock ?? 'Rupture de stock',
-                            style: const TextStyle(
-                              color: AppTheme.primaryBlack,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 12,
-                            ),
                           ),
                         ),
                       ),
@@ -158,7 +135,7 @@ class ProductCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (product.isOnSale)
+                        if (product.reducedPrice != null && product.reducedPrice! < product.price)
                           Text(
                             CurrencyFormatter.formatTND(product.price),
                             style: const TextStyle(
@@ -183,32 +160,30 @@ class ProductCard extends StatelessWidget {
                               ),
                             ),
 
-                            // Quick Add Button
+                            // Quick Add Button - all products are in stock now
                             if (showAddToCart)
                               Consumer<CartProvider>(
                                 builder: (context, cart, child) {
                                   final isInCart = cart.isInCart(product.id);
                                   return GestureDetector(
-                                    onTap: product.inStock
-                                        ? () {
-                                            if (!isInCart) {
-                                              cart.addItem(product);
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content: Text(l10n?.addedToCart ?? 'Ajouté au panier'),
-                                                  duration: const Duration(seconds: 1),
-                                                  behavior: SnackBarBehavior.floating,
-                                                ),
-                                              );
-                                            }
-                                          }
-                                        : null,
+                                    onTap: () {
+                                      if (!isInCart) {
+                                        cart.addItem(product);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text(l10n?.addedToCart ?? 'Ajouté au panier'),
+                                            duration: const Duration(seconds: 1),
+                                            behavior: SnackBarBehavior.floating,
+                                          ),
+                                        );
+                                      }
+                                    },
                                     child: Container(
                                       padding: const EdgeInsets.all(6),
                                       decoration: BoxDecoration(
                                         color: isInCart
                                             ? AppTheme.successGreen
-                                            : (product.inStock ? AppTheme.primaryBlack : AppTheme.lightGrey),
+                                            : AppTheme.primaryBlack,
                                         borderRadius: BorderRadius.circular(
                                           AppTheme.radiusSmall,
                                         ),

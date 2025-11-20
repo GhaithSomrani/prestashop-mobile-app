@@ -22,12 +22,18 @@ class ApiService {
     Map<String, String>? queryParameters,
   }) async {
     try {
-      final uri = Uri.parse('$baseUrl$endpoint').replace(
-        queryParameters: {
-          'output_format': ApiConfig.outputFormat,
-          if (queryParameters != null) ...queryParameters,
-        },
-      );
+      // Build query string manually to avoid encoding brackets
+      final params = {
+        'output_format': ApiConfig.outputFormat,
+        if (queryParameters != null) ...queryParameters,
+      };
+
+      final queryString = params.entries
+          .map((e) => '${e.key}=${e.value}')
+          .join('&');
+
+      final url = '$baseUrl$endpoint?$queryString';
+      final uri = Uri.parse(url);
 
       if (ApiConfig.debugMode) {
         print('GET Request: $uri');
