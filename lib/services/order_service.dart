@@ -40,14 +40,16 @@ class OrderService {
           'secure_key': '',
           'allow_seperated_package': '0',
           'associations': {
-            'cart_rows': items.map((item) {
-              return {
-                'id_product': item.product.id,
-                'id_product_attribute': item.variantId ?? '0',
-                'id_address_delivery': shippingAddress.id,
-                'quantity': item.quantity.toString(),
-              };
-            }).toList(),
+            'cart_rows': {
+              'cart_row': items.map((item) {
+                return {
+                  'id_product': item.product.id,
+                  'id_product_attribute': item.variantId ?? '0',
+                  'id_address_delivery': shippingAddress.id,
+                  'quantity': item.quantity.toString(),
+                };
+              }).toList(),
+            },
           },
         },
       };
@@ -129,21 +131,23 @@ class OrderService {
           'conversion_rate': '1.000000',
           'reference': '',
           'associations': {
-            'order_rows': items.map((item) {
-              return {
-                'product_id': item.product.id,
-                'product_attribute_id': item.variantId ?? '0',
-                'product_quantity': item.quantity.toString(),
-                'product_name': item.product.name,
-                'product_reference': item.product.reference ?? '',
-                'product_ean13': '',
-                'product_isbn': '',
-                'product_upc': '',
-                'product_price': item.product.finalPrice.toStringAsFixed(6),
-                'unit_price_tax_incl': item.product.finalPrice.toStringAsFixed(6),
-                'unit_price_tax_excl': item.product.finalPrice.toStringAsFixed(6),
-              };
-            }).toList(),
+            'order_rows': {
+              'order_row': items.map((item) {
+                return {
+                  'product_id': item.product.id,
+                  'product_attribute_id': item.variantId ?? '0',
+                  'product_quantity': item.quantity.toString(),
+                  'product_name': item.product.name,
+                  'product_reference': item.product.reference ?? '',
+                  'product_ean13': '',
+                  'product_isbn': '',
+                  'product_upc': '',
+                  'product_price': item.product.finalPrice.toStringAsFixed(6),
+                  'unit_price_tax_incl': item.product.finalPrice.toStringAsFixed(6),
+                  'unit_price_tax_excl': item.product.finalPrice.toStringAsFixed(6),
+                };
+              }).toList(),
+            },
           },
         },
       };
