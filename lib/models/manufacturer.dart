@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 /// Model for PrestaShop manufacturer (brand)
 class Manufacturer {
   final String id;
@@ -23,13 +25,13 @@ class Manufacturer {
   factory Manufacturer.fromJson(Map<String, dynamic> json) {
     return Manufacturer(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
-      description: json['description']?.toString() ?? '',
-      shortDescription: json['short_description']?.toString(),
+      name: LanguageHelper.extractValueOrEmpty(json['name']),
+      description: LanguageHelper.extractValueOrEmpty(json['description']),
+      shortDescription: LanguageHelper.extractValue(json['short_description']),
       logoUrl: json['logo_url']?.toString(),
       active: json['active'] == '1' || json['active'] == true,
-      metaTitle: json['meta_title']?.toString(),
-      metaDescription: json['meta_description']?.toString(),
+      metaTitle: LanguageHelper.extractValue(json['meta_title']),
+      metaDescription: LanguageHelper.extractValue(json['meta_description']),
     );
   }
 

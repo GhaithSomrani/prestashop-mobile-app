@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 /// Model for PrestaShop product feature (e.g., Material, Weight)
 class Feature {
   final String id;
@@ -13,7 +15,7 @@ class Feature {
   factory Feature.fromJson(Map<String, dynamic> json) {
     return Feature(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
+      name: LanguageHelper.extractValueOrEmpty(json['name']),
       position: json['position'] is int
           ? json['position']
           : int.tryParse(json['position']?.toString() ?? '0') ?? 0,
@@ -47,7 +49,7 @@ class FeatureValue {
     return FeatureValue(
       id: json['id']?.toString() ?? '',
       idFeature: json['id_feature']?.toString() ?? '',
-      value: json['value']?.toString() ?? '',
+      value: LanguageHelper.extractValueOrEmpty(json['value']),
       custom: json['custom'] == '1' || json['custom'] == true,
     );
   }
@@ -79,9 +81,9 @@ class ProductFeature {
   factory ProductFeature.fromJson(Map<String, dynamic> json) {
     return ProductFeature(
       featureId: json['id_feature']?.toString() ?? '',
-      featureName: json['feature_name']?.toString() ?? '',
+      featureName: LanguageHelper.extractValueOrEmpty(json['feature_name']),
       valueId: json['id_feature_value']?.toString() ?? '',
-      value: json['value']?.toString() ?? '',
+      value: LanguageHelper.extractValueOrEmpty(json['value']),
     );
   }
 

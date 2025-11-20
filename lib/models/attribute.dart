@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 /// Model for PrestaShop product attribute group (e.g., Size, Color)
 class AttributeGroup {
   final String id;
@@ -17,7 +19,7 @@ class AttributeGroup {
   factory AttributeGroup.fromJson(Map<String, dynamic> json) {
     return AttributeGroup(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
+      name: LanguageHelper.extractValueOrEmpty(json['name']),
       groupType: json['group_type']?.toString() ?? 'select',
       position: json['position'] is int
           ? json['position']
@@ -61,7 +63,7 @@ class AttributeValue {
     return AttributeValue(
       id: json['id']?.toString() ?? '',
       idAttributeGroup: json['id_attribute_group']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
+      name: LanguageHelper.extractValueOrEmpty(json['name']),
       color: json['color']?.toString(),
       position: json['position'] is int
           ? json['position']

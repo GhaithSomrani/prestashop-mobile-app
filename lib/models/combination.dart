@@ -1,3 +1,5 @@
+import '../utils/language_helper.dart';
+
 /// Model for PrestaShop product combination (variants like size, color)
 class Combination {
   final String id;
@@ -76,8 +78,8 @@ class CombinationAttribute {
   factory CombinationAttribute.fromJson(Map<String, dynamic> json) {
     return CombinationAttribute(
       id: json['id']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
-      value: json['value']?.toString() ?? '',
+      name: LanguageHelper.extractValueOrEmpty(json['name']),
+      value: LanguageHelper.extractValueOrEmpty(json['value']),
     );
   }
 
