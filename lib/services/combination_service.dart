@@ -21,7 +21,13 @@ class CombinationService {
 
       List<Combination> combinations = [];
       if (response['combinations'] != null) {
-        final combinationsData = response['combinations'];
+        var combinationsData = response['combinations'];
+
+        // Handle XML structure: {combinations: {combination: {...}}} or {combinations: {combination: [...]}}
+        if (combinationsData is Map && combinationsData['combination'] != null) {
+          combinationsData = combinationsData['combination'];
+        }
+
         if (combinationsData is List) {
           combinations = combinationsData
               .map((combinationJson) => Combination.fromJson(combinationJson))
