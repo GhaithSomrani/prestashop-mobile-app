@@ -1,6 +1,11 @@
-import '../utils/language_helper.dart';
-
 /// Model for PrestaShop product combination (variants like size, color)
+///
+/// According to PrestaShop webservice:
+/// - The `price` field is the price IMPACT (not final price)
+/// - Final Price = Base Product Price + Combination Price Impact
+/// - The associations.product_option_values only contain IDs (with xlink:href)
+/// - To get actual attribute names, you must fetch product_option_values/{id}
+/// - To get group names (Size, Color), you must fetch product_options/{id}
 class Combination {
   final String id;
   final String idProduct;
@@ -8,7 +13,7 @@ class Combination {
   final double priceImpact; // Price difference from base product (can be + or -)
   final int quantity;
   final bool defaultOn;
-  final List<CombinationAttribute> attributes;
+  final List<String> productOptionValueIds; // Just IDs from associations
 
   Combination({
     required this.id,
@@ -17,7 +22,7 @@ class Combination {
     required this.priceImpact,
     required this.quantity,
     required this.defaultOn,
-    this.attributes = const [],
+    this.productOptionValueIds = const [],
   });
 
   bool get inStock => quantity > 0;
@@ -35,8 +40,9 @@ class Combination {
       return int.tryParse(value.toString()) ?? 0;
     }
 
-    // Parse product option values from associations
-    List<CombinationAttribute> attributes = [];
+    // Extract product option value IDs from associations
+    // These are just IDs - actual names must be fetched via product_option_values endpoint
+    List<String> optionValueIds = [];
     if (json['associations']?['product_option_values'] != null) {
       var optionValues = json['associations']['product_option_values'];
 
@@ -46,11 +52,18 @@ class Combination {
       }
 
       if (optionValues is List) {
-        attributes = optionValues
-            .map((attr) => CombinationAttribute.fromJson(attr as Map<String, dynamic>))
+        optionValueIds = optionValues
+            .map((item) {
+              if (item is Map) {
+                return item['id']?.toString() ?? '';
+              }
+              return item.toString();
+            })
+            .where((id) => id.isNotEmpty)
             .toList();
       } else if (optionValues is Map) {
-        attributes = [CombinationAttribute.fromJson(optionValues as Map<String, dynamic>)];
+        final id = optionValues['id']?.toString() ?? '';
+        if (id.isNotEmpty) optionValueIds.add(id);
       }
     }
 
@@ -61,7 +74,7 @@ class Combination {
       priceImpact: parsePriceImpact(json['price']),
       quantity: parseQuantity(json['quantity']),
       defaultOn: json['default_on'] == '1' || json['default_on'] == true,
-      attributes: attributes,
+      productOptionValueIds: optionValueIds,
     );
   }
 
@@ -73,36 +86,7 @@ class Combination {
       'price': priceImpact,
       'quantity': quantity,
       'default_on': defaultOn ? '1' : '0',
-      'attributes': attributes.map((attr) => attr.toJson()).toList(),
-    };
-  }
-}
-
-/// Attribute associated with a combination (e.g., Color: Red, Size: M)
-class CombinationAttribute {
-  final String id;
-  final String name;
-  final String value;
-
-  CombinationAttribute({
-    required this.id,
-    required this.name,
-    required this.value,
-  });
-
-  factory CombinationAttribute.fromJson(Map<String, dynamic> json) {
-    return CombinationAttribute(
-      id: json['id']?.toString() ?? '',
-      name: LanguageHelper.extractValueOrEmpty(json['name']),
-      value: LanguageHelper.extractValueOrEmpty(json['value']),
-    );
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'value': value,
+      'product_option_value_ids': productOptionValueIds,
     };
   }
 }
