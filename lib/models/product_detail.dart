@@ -181,6 +181,53 @@ class ProductDetail {
     );
   }
 
+  /// Create a copy with updated fields
+  ProductDetail copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? shortDescription,
+    double? basePrice,
+    String? imageUrl,
+    List<String>? images,
+    String? reference,
+    bool? active,
+    String? categoryId,
+    String? manufacturerId,
+    String? manufacturerName,
+    String? defaultCombinationId,
+    bool? isSimpleProduct,
+    List<ProductCombination>? combinations,
+    ProductCombination? defaultCombination, // Ignored - computed property
+    int? simpleProductStock,
+    bool? onSale,
+    double? discountPercentage,
+    String? taxRulesGroupId,
+    PriceRange? priceRange, // Ignored - computed property
+  }) {
+    return ProductDetail(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      shortDescription: shortDescription ?? this.shortDescription,
+      basePrice: basePrice ?? this.basePrice,
+      imageUrl: imageUrl ?? this.imageUrl,
+      images: images ?? this.images,
+      reference: reference ?? this.reference,
+      active: active ?? this.active,
+      categoryId: categoryId ?? this.categoryId,
+      manufacturerId: manufacturerId ?? this.manufacturerId,
+      manufacturerName: manufacturerName ?? this.manufacturerName,
+      defaultCombinationId: defaultCombinationId ?? this.defaultCombinationId,
+      isSimpleProduct: isSimpleProduct ?? this.isSimpleProduct,
+      combinations: combinations ?? this.combinations,
+      simpleProductStock: simpleProductStock ?? this.simpleProductStock,
+      onSale: onSale ?? this.onSale,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      taxRulesGroupId: taxRulesGroupId ?? this.taxRulesGroupId,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,
