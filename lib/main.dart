@@ -11,6 +11,7 @@ import 'services/customer_service.dart';
 import 'services/filter_service.dart';
 import 'services/cart_rule_service.dart';
 import 'services/carrier_service.dart';
+import 'services/location_service.dart';
 import 'providers/product_provider.dart';
 import 'providers/category_provider.dart';
 import 'providers/cart_provider.dart';
@@ -19,6 +20,7 @@ import 'providers/auth_provider.dart';
 import 'providers/wishlist_provider.dart';
 import 'providers/address_provider.dart';
 import 'providers/carrier_provider.dart';
+import 'providers/location_provider.dart';
 import 'screens/home/home_screen.dart';
 import 'screens/category/category_screen.dart';
 import 'screens/cart/cart_screen.dart';
@@ -53,6 +55,7 @@ class MyApp extends StatelessWidget {
     final filterService = FilterService(apiService);
     final cartRuleService = CartRuleService(apiService);
     final carrierService = CarrierService(apiService);
+    final locationService = LocationService(apiService);
 
     return MultiProvider(
       providers: [
@@ -79,6 +82,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => CarrierProvider(carrierService),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LocationProvider(locationService),
         ),
       ],
       child: MaterialApp(

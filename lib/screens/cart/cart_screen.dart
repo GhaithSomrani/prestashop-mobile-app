@@ -4,7 +4,7 @@ import '../../providers/cart_provider.dart';
 import '../../widgets/cart_item_widget.dart';
 import '../../widgets/empty_state_widget.dart';
 import '../../config/app_theme.dart';
-import '../checkout/checkout_screen.dart';
+import '../checkout/enhanced_checkout_screen.dart';
 import '../../l10n/app_localizations.dart';
 import '../../utils/currency_formatter.dart';
 
@@ -185,7 +185,7 @@ class CartScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const CheckoutScreen(),
+                                builder: (context) => const EnhancedCheckoutScreen(),
                               ),
                             );
                           },

@@ -22,13 +22,11 @@ class EnhancedCheckoutScreen extends StatefulWidget {
 
 class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen> {
   int _currentStep = 0;
-  String _selectedPayment = 'Cash on Delivery';
+  String _selectedPayment = 'ps_cashondelivery';
 
   final List<Map<String, dynamic>> _paymentMethods = [
-    {'id': 'cod', 'name': 'Cash on Delivery', 'icon': Icons.money},
-    {'id': 'card', 'name': 'Credit Card', 'icon': Icons.credit_card},
-    {'id': 'paypal', 'name': 'PayPal', 'icon': Icons.payment},
-    {'id': 'bank', 'name': 'Bank Transfer', 'icon': Icons.account_balance},
+    {'id': 'ps_cashondelivery', 'name': 'Paiement comptant à la livraison', 'icon': Icons.money},
+    {'id': 'ps_checkpayment', 'name': 'Chèque', 'icon': Icons.receipt_long},
   ];
 
   @override
@@ -84,6 +82,7 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen> {
         items: cart.items,
         carrierId: selectedCarrier.id,
         paymentMethod: _selectedPayment,
+        shippingCost: selectedCarrier.price,
       );
 
       cart.clearCart();
@@ -336,7 +335,7 @@ class _EnhancedCheckoutScreenState extends State<EnhancedCheckoutScreen> {
         const SizedBox(height: 8),
         ...(_paymentMethods.map((method) {
           return RadioListTile<String>(
-            value: method['name'],
+            value: method['id'],
             groupValue: _selectedPayment,
             onChanged: (value) {
               setState(() => _selectedPayment = value!);

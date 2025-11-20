@@ -17,6 +17,7 @@ class OrderService {
     required List<CartItem> items,
     required String carrierId,
     required String paymentMethod,
+    double shippingCost = 0.0,
   }) async {
     try {
       // Calculate totals
@@ -25,8 +26,9 @@ class OrderService {
         (sum, item) => sum + item.totalPrice,
       );
 
-      // Note: Shipping cost should be fetched from carrier
-      const totalShipping = 0.0; // This should be calculated based on carrier
+      final totalProductsWithTax = totalProducts;
+      final totalShipping = shippingCost;
+      final totalPaid = totalProducts + totalShipping;
 
       final orderData = {
         'order': {
@@ -34,16 +36,33 @@ class OrderService {
           'id_address_delivery': shippingAddress.id,
           'id_address_invoice': billingAddress?.id ?? shippingAddress.id,
           'id_carrier': carrierId,
+          'id_lang': '1',
+          'id_currency': '1',
+          'id_shop': '1',
+          'id_shop_group': '1',
           'payment': paymentMethod,
-          'total_products': totalProducts,
-          'total_shipping': totalShipping,
-          'total_paid': totalProducts + totalShipping,
+          'module': paymentMethod == 'ps_checkpayment' ? 'ps_checkpayment' : 'ps_cashondelivery',
+          'current_state': '1',
+          'total_products': totalProducts.toStringAsFixed(6),
+          'total_products_wt': totalProductsWithTax.toStringAsFixed(6),
+          'total_shipping': totalShipping.toStringAsFixed(6),
+          'total_shipping_tax_incl': totalShipping.toStringAsFixed(6),
+          'total_shipping_tax_excl': totalShipping.toStringAsFixed(6),
+          'total_paid': totalPaid.toStringAsFixed(6),
+          'total_paid_tax_incl': totalPaid.toStringAsFixed(6),
+          'total_paid_tax_excl': totalPaid.toStringAsFixed(6),
+          'total_paid_real': '0.000000',
+          'conversion_rate': '1.000000',
           'associations': {
             'order_rows': items.map((item) {
               return {
                 'product_id': item.product.id,
-                'product_quantity': item.quantity,
-                'product_price': item.product.finalPrice,
+                'product_attribute_id': item.variantId ?? '0',
+                'product_quantity': item.quantity.toString(),
+                'product_name': item.product.name,
+                'product_price': item.product.finalPrice.toStringAsFixed(6),
+                'unit_price_tax_incl': item.product.finalPrice.toStringAsFixed(6),
+                'unit_price_tax_excl': item.product.finalPrice.toStringAsFixed(6),
               };
             }).toList(),
           },
