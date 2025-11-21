@@ -1,3 +1,5 @@
+import 'product_detail.dart';
+
 /// Model for PrestaShop product combination (variants like size, color)
 ///
 /// According to PrestaShop webservice:
@@ -14,6 +16,7 @@ class Combination {
   final int quantity;
   final bool defaultOn;
   final List<String> productOptionValueIds; // Just IDs from associations
+  final List<CombinationAttributeDetail> attributes; // Resolved attribute details
 
   Combination({
     required this.id,
@@ -23,6 +26,7 @@ class Combination {
     required this.quantity,
     required this.defaultOn,
     this.productOptionValueIds = const [],
+    this.attributes = const [],
   });
 
   bool get inStock => quantity > 0;
@@ -75,6 +79,19 @@ class Combination {
       quantity: parseQuantity(json['quantity']),
       defaultOn: json['default_on'] == '1' || json['default_on'] == true,
       productOptionValueIds: optionValueIds,
+    );
+  }
+
+  Combination copyWithAttributeDetails(List<CombinationAttributeDetail> details) {
+    return Combination(
+      id: id,
+      idProduct: idProduct,
+      reference: reference,
+      priceImpact: priceImpact,
+      quantity: quantity,
+      defaultOn: defaultOn,
+      productOptionValueIds: productOptionValueIds,
+      attributes: details,
     );
   }
 

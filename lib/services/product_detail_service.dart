@@ -33,7 +33,7 @@ class ProductDetailService {
       // Step 1: Fetch product with full display
       final productResponse = await _apiService.get(
         '${ApiConfig.productsEndpoint}/$productId',
-        queryParameters: {'display': 'full'},
+        queryParameters: {},
       );
 
       if (productResponse['product'] == null) {
@@ -107,7 +107,7 @@ class ProductDetailService {
     for (final combo in combinationsData) {
       if (combo.attributes.isNotEmpty) {
         for (final attr in combo.attributes) {
-          allOptionValueIds.add(attr.id);
+          allOptionValueIds.add(attr.valueId);
         }
       }
       // Also check associations for product_option_values
@@ -149,7 +149,7 @@ class ProductDetailService {
 
       // From attributes
       for (final attr in combo.attributes) {
-        comboOptionValueIds.add(attr.id);
+        comboOptionValueIds.add(attr.valueId);
       }
 
       // From associations

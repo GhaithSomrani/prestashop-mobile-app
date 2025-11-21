@@ -55,7 +55,7 @@ class OrdersScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Order #${order.reference ?? order.id ?? 'N/A'}',
+                            '${order.reference ?? order.id ?? 'N/A'}',
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -71,7 +71,7 @@ class OrdersScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Text(
-                              order.orderState ?? 'Pending',
+                              order.orderStateName,
                               style: const TextStyle(
                                 color: AppTheme.accentBlue,
                                 fontSize: 12,
@@ -171,7 +171,7 @@ class OrdersScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
                   _buildDetailRow('Order ID', order.reference ?? order.id ?? 'N/A'),
-                  _buildDetailRow('Status', order.orderState ?? 'Pending'),
+                  _buildDetailRow('Status', order.orderStateName),
                   if (order.dateAdd != null)
                     _buildDetailRow(
                       'Date',
@@ -213,7 +213,7 @@ class OrdersScreen extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              '${item.product.name} x${item.quantity}',
+                              '${item.productName} x${item.quantity}',
                               style: const TextStyle(fontSize: 14),
                             ),
                           ),

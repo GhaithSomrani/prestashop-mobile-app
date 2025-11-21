@@ -68,7 +68,7 @@ class FeatureService {
     try {
       final response = await _apiService.get(
         '${ApiConfig.productsEndpoint}/$productId',
-        queryParameters: {'display': 'full'},
+        queryParameters: {},
       );
 
       List<ProductFeature> productFeatures = [];

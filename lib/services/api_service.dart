@@ -61,9 +61,7 @@ class ApiService {
         print('POST Data: $data');
       }
 
-      // Convert data to XML format for POST
       final xmlBody = _mapToXml(data);
-
       final response = await http.post(
         uri,
         headers: _headers,
@@ -157,8 +155,7 @@ class ApiService {
     } else if (response.statusCode == 500) {
       throw ApiException('Server error');
     } else {
-      throw ApiException(
-          'Request failed with status: ${response.statusCode}');
+      throw ApiException('Request failed with status: ${response.statusCode}');
     }
   }
 
@@ -207,7 +204,8 @@ class ApiService {
     // Check for PrestaShop's list pattern with single child that contains multiple items
     if (childElements.length == 1) {
       final singleChild = childElements.first;
-      final grandChildren = singleChild.children.whereType<xml.XmlElement>().toList();
+      final grandChildren =
+          singleChild.children.whereType<xml.XmlElement>().toList();
 
       // If single child has multiple children with same name, treat parent as list container
       if (grandChildren.length > 1) {

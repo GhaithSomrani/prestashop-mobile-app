@@ -110,6 +110,7 @@ class CustomerService {
       final queryParams = <String, String>{
         'display': 'full',
         'filter[id_customer]': customerId,
+        'filter[deleted]': '0',
       };
 
       final response = await _apiService.get(

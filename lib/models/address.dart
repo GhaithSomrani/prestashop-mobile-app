@@ -70,18 +70,26 @@ class Address {
   Map<String, dynamic> toJson() {
     return {
       if (id != null) 'id': id,
+      'id_customer': customerId ?? '',
+      'id_manufacturer': '',
+      'id_supplier': '',
+      'id_warehouse': '',
+      'id_country': countryId ?? '1',
+      'id_state': stateId ?? '0',
       'alias': alias,
-      'firstname': firstName,
+      'company': '',
       'lastname': lastName,
+      'firstname': firstName,
+      'vat_number': '',
       'address1': address1,
-      if (address2 != null) 'address2': address2,
+      'address2': address2 ?? '',
       'postcode': postcode,
       'city': city,
-      'id_country': countryId ?? '1',
-      if (stateId != null) 'id_state': stateId,
-      if (phone != null) 'phone': phone,
-      if (mobilePhone != null) 'phone_mobile': mobilePhone,
-      if (customerId != null) 'id_customer': customerId,
+      'other': '',
+      'phone': phone ?? '',
+      'phone_mobile': mobilePhone ?? '',
+      'dni': '',
+      'deleted': '0',
     };
   }
 }

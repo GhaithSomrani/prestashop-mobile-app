@@ -12,6 +12,7 @@ class CarrierService {
       final queryParams = <String, String>{
         'display': 'full',
         'filter[active]': '1',
+        'filter[deleted]': '0',
       };
 
       final response = await _apiService.get(
