@@ -237,13 +237,19 @@ class OrderService {
 
         // Handle different response structures
         if (ordersData is List) {
-          ordersList = ordersData.cast<Map<String, dynamic>>();
+          ordersList = ordersData
+              .where((item) => item is Map)
+              .map((item) => item as Map<String, dynamic>)
+              .toList();
         } else if (ordersData is Map) {
           // Single order or nested structure
           if (ordersData.containsKey('order')) {
             var orderData = ordersData['order'];
             if (orderData is List) {
-              ordersList = orderData.cast<Map<String, dynamic>>();
+              ordersList = orderData
+                  .where((item) => item is Map)
+                  .map((item) => item as Map<String, dynamic>)
+                  .toList();
             } else if (orderData is Map) {
               ordersList = [orderData as Map<String, dynamic>];
             }
