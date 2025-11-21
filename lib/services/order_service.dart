@@ -52,11 +52,8 @@ class OrderService {
       // Step 1: Create a cart in PrestaShop
       final cartData = {
         'cart': {
-          'id_customer': customer.id,
           'id_address_delivery': shippingAddress.id,
           'id_address_invoice': billingAddress?.id ?? shippingAddress.id,
-          'id_carrier': carrierId,
-          'id_lang': '1',
           'id_currency': '1',
           'associations': {
             'cart_rows': {
@@ -105,14 +102,24 @@ class OrderService {
 
       final orderData = {
         'order': {
-          'id_cart': cartId,
-          'id_customer': customer.id,
           'id_address_delivery': shippingAddress.id,
           'id_address_invoice': billingAddress?.id ?? shippingAddress.id,
-          'id_carrier': carrierId,
-          'id_lang': '1',
+          'id_cart': cartId,
           'id_currency': '1',
-          'id_shop': '1',
+          'id_lang': '1',
+          'id_customer': customer.id,
+          'id_carrier': carrierId,
+          'current_state': '1',
+          'module': paymentMethod == 'ps_checkpayment' ? 'ps_checkpayment' : 'ps_cashondelivery',
+          'invoice_number': '0',
+          'invoice_date': '0000-00-00 00:00:00',
+          'delivery_number': '0',
+          'delivery_date': '0000-00-00 00:00:00',
+          'valid': '0',
+          'date_add': dateStr,
+          'date_upd': dateStr,
+          'shipping_number': '',
+          'note': '',
           'id_shop_group': '1',
           'secure_key': customer.secureKey ?? '',
           'payment': paymentMethod == 'ps_checkpayment'
@@ -154,6 +161,7 @@ class OrderService {
           'total_paid_tax_excl': totalPaid.toStringAsFixed(6),
           'total_paid_real': '0.000000',
           'conversion_rate': '1.000000',
+          'reference': '',
           'reference': '',
           'associations': {
             'order_rows': items.map((item) {
